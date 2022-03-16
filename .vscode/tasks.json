@@ -6,7 +6,7 @@
         {
             "label": "tasks",
             "type": "shell",
-            "command": "cd /workspace/1337-Projects/Common_Core/pipex/ && gcc -g pipex.c",
+            "command": "cd /workspace/1337-Projects/Common_Core/pipex/ && gcc -g pipex_utils.c",
             "group": {
                 "kind": "build",
                 "isDefault": true
