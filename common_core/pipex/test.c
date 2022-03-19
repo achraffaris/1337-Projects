@@ -1,38 +1,50 @@
 #include "pipex.h"
 
-int start_with(char *str, char *ptr)
+int command_exists(char *path, char *cmd)
 {
-    int i;
-    int str_len;
+    char    *cmd_path;
 
-    str_len = get_length(str, '\0');
-    i = 0;
-    while (ptr[i] == str[i])
-    {
-        i++;
-    }
-    if (i == str_len)
-        return (1);
+    cmd_path = ft_strjoin(path, cmd);
+    if (access(cmd_path, X_OK) == 0)
+        return (1);       
     return (0);
+}
+
+char    *ft_execute(char *cmd, char **env)
+{
+    char **paths;
+    char **cmds;
+    int pid;
+    int fd[2];
+    int i;
+
+    i = 0;
+    paths = get_paths(env);
+    cmds = ft_split(cmd, ' ');
+    pipe(fd);
+    pid = fork();
+    if (pid == 0)
+    {
+        while (paths[i])
+        {
+            if (command_exists(paths[i], ft_strjoin("/", cmds[0])))
+            {
+                dup2(fd[1], 1);
+                execve(get_absolute_path(paths[i], cmds[0]), cmds, 0);
+                exit(0);
+            }
+            i++;
+        }
+    }
+    waitpid(pid, 0, 0);
+    return (get_next_line(fd[0]));
 }
 
 int main(int argc, char **argv, char **env)
 {
-    char **paths;
     int i;
-
     i = 0;
-    while (env[i])
-    {
-        if (start_with("PATH=", env[i]))
-            paths = ft_split(&env[i][5], ':');
-        i++;
-    }
-    i = 0;
-    while (paths[i])
-    {
-         printf("path[%d] = %s\n", i, paths[i]);
-         i++;
-    }
+    
+    printf("return = %s\n", ft_execute(argv[1], env));
     return 0;
 }

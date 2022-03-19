@@ -13,41 +13,42 @@
             "MIMode": "gdb",
             "setupCommands": [
                 {
-                    "description": "Enable funcy printing to gdb",
+                    "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 },
-                {   "description":"In this mode GDB will be attached to both processes after a call to fork() or vfork().",
-                    "text": "-gdb-set detach-on-fork off",
-                    "ignoreFailures": true
-                },
-                {   "description": "The new process is debugged after a fork. The parent process runs unimpeded.",
-                    "text": "-gdb-set follow-fork-mode child",
+                {
+                    "description":  "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
                     "ignoreFailures": true
                 }
-            ],
+            ]
         },
-
         {
-            "name": "gcc build and debug active file",
+            "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
             "program": "/workspace/1337-Projects/common_core/pipex/a.out",
-            "args": ["ls -la"],
-            "stopAtEntry": true,
-            "cwd": "${workspaceFolder}",
+            "args": ["ping -c 5 google.com"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
+            "preLaunchTask": "tasks",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
-                    "ignoreFailures": false
+                    "ignoreFailures": true
+                },
+                {
+                    "description":  "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
                 }
-            ],
-            "preLaunchTask": "tasks",
-            "miDebuggerPath": "/usr/bin/gdb"
+            ],  
         }
+
     ]
 }

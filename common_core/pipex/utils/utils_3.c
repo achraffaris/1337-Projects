@@ -1,4 +1,4 @@
-#include "pipex.h"
+#include "utils.h"
 
 int word_count(char *str, char sep)
 {
@@ -48,8 +48,11 @@ char **ft_split(char *str, char sep)
     pos = 0;
     el = word_count(str, sep);
     arr = malloc(sizeof(char *) * (el + 1));
-    if (!arr)
+    if (!arr || !str)
+    {
         free_buff(arr, j, 1);
+        return (0);
+    }
     while (str[i] && j < el)
     {
         if (str[i] == sep || str[i + 1] == '\0')
