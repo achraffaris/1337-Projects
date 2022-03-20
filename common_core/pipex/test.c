@@ -34,15 +34,52 @@ void    ft_initialize(args *a, char **av, char **env, int index)
         a->is_valid = 0;
 }
 
+
+
+void    in_execution(args *x)
+{
+
+}
+
+void    out_execution(args *y)
+{
+
+}
+
+void    raise_error()
+{
+    perror(NULL);
+}
+
 void    ft_start(args *x, args *y)
 {
-    printf("ready!\n");
+    int pid1;
+    int pid2;
+    int fd[2];
+
+    int f = open("input", O_RDWR);
+
+    pipe(fd);
+    pid1 = fork();
+    if (pid1 == 0)
+    {
+        pid2 = fork();
+        if (pid2 == 0)
+        {
+            waitpid(pid1, 0, 0);
+            dup2(fd[0], 0);
+            execve(y->path, y->cmds, 0);
+        }
+        dup2(1, f);
+        execve(x->path, x->cmds, 0);
+    }
 }
 
 void    ft_end(args *x, args *y)
 {
     free_args(x);
     free_args(y);
+    raise_error();
 }
 
 int main(int ac, char **av, char **env)
@@ -53,8 +90,8 @@ int main(int ac, char **av, char **env)
     ft_initialize(&x, av, env, 2);
     ft_initialize(&y, av, env, 3);
     
-    if (x.is_valid)
+    if (x.is_valid && y.is_valid)
         ft_start(&x, &y);
-    if (y.is_valid)
-        ft_start(&x, &y);
+    else
+        ft_end(&x, &y);
 }
