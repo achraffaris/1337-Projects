@@ -12,7 +12,7 @@ typedef struct args{
     char **cmds;
     char *path;
     char *cmd;
-    int allowed;
+    int is_valid;
 } args;
 
 typedef struct var{
