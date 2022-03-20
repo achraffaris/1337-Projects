@@ -66,13 +66,14 @@ void    ft_start(args *x, args *y)
         pid2 = fork();
         if (pid2 == 0)
         {
-            waitpid(pid1, 0, 0);
-            dup2(fd[0], 0);
+            dup2(1, fd[1]);
             execve(y->path, y->cmds, 0);
         }
-        dup2(1, f);
+        waitpid(pid2, 0, 0);
+        dup2(fd[0], 0);
         execve(x->path, x->cmds, 0);
     }
+    waitpid(pid1, 0, 0);
 }
 
 void    ft_end(args *x, args *y)
