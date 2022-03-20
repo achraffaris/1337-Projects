@@ -6,7 +6,7 @@
                 {
                     "label": "tasks",
                     "type": "shell",
-                    "command": "cd /workspace/1337-Projects/common_core/pipex/ && gcc -g *.c */*.c -D BUFFER_SIZE=4",
+                    "command": "cd /workspace/1337-Projects/common_core/pipex/ && gcc -g *.c utils/*/*.c -D BUFFER_SIZE=42 && ./a.out",
                     "group": {
                         "kind": "build",
                         "isDefault": true

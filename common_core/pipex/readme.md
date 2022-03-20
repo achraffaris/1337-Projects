@@ -28,3 +28,13 @@ It takes no parameters and returns an integer value. Below are different values 
 2. Useful resources:
 	* Understanding OS, Process, Fork() etc ... :
 	   * https://youtube.com/playlist?list=PLBlnK6fEyqRiVhbXDGLXDk_OQAeuVcp2O
+
+
+3. Algorithm:
+
+1 - add argc, argv, env to main() parameters to read command and get env variables.
+2 - Create array 2D array of type int (to communicate between the processes)
+
+3 - create 
+
+

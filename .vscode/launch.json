@@ -29,7 +29,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/workspace/1337-Projects/common_core/pipex/a.out",
-            "args": ["ping -c 5 google.com"],
+            "args": ["infile","khghk","whereis","outfile"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

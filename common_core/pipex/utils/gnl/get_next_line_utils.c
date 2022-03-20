@@ -21,18 +21,6 @@ void	free_buffers(char **rest)
 	}
 }
 
-int	get_length(char *str, char c)
-{
-	int	i;
-
-	i = 0;
-	if (!str)
-		return (0);
-	while (str && str[i] != c && str[i])
-		i++;
-	return (i);
-}
-
 void	save_rest_st(char **rest, int pos)
 {
 	char	*tmp;

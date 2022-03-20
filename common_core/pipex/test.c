@@ -1,50 +1,55 @@
 #include "pipex.h"
 
-int command_exists(char *path, char *cmd)
+char    *get_path_or_none(char **paths, char *cmd)
 {
-    char    *cmd_path;
+    var v;
 
-    cmd_path = ft_strjoin(path, cmd);
-    if (access(cmd_path, X_OK) == 0)
-        return (1);       
-    return (0);
-}
-
-char    *ft_execute(char *cmd, char **env)
-{
-    char **paths;
-    char **cmds;
-    int pid;
-    int fd[2];
-    int i;
-
-    i = 0;
-    paths = get_paths(env);
-    cmds = ft_split(cmd, ' ');
-    pipe(fd);
-    pid = fork();
-    if (pid == 0)
+    v.i = 0;
+    v.tmp = ft_strjoin("/", cmd);
+    while(paths[v.i])
     {
-        while (paths[i])
-        {
-            if (command_exists(paths[i], ft_strjoin("/", cmds[0])))
-            {
-                dup2(fd[1], 1);
-                execve(get_absolute_path(paths[i], cmds[0]), cmds, 0);
-                exit(0);
-            }
-            i++;
-        }
+        if (command_exists(paths[v.i], v.tmp))
+            return (ft_strjoin(paths[v.i], v.tmp));
+        v.i++;
     }
-    waitpid(pid, 0, 0);
-    return (get_next_line(fd[0]));
+    return (NULL);
 }
 
-int main(int argc, char **argv, char **env)
+void    ft_initialize(args *a, char **av, char **env, int index)
 {
-    int i;
-    i = 0;
-    
-    printf("return = %s\n", ft_execute(argv[1], env));
-    return 0;
+    if (av[1])
+    {
+        a->cmds = ft_split(av[index], ' ');
+        a->paths = get_paths(env);
+        a->cmd = ft_strjoin(av[index], 0);
+        a->path = get_path_or_none(a->paths, a->cmd);
+        if (a->path)
+            a->allowed = 1;
+        else
+            a->allowed = 0;
+    }
+    else
+        a->allowed = 0;
+}
+
+void    ft_start(args *x, args *y, char **av, char **env)
+{
+    ft_initialize(x, av, env, 2);
+    ft_initialize(y, av, env, 3);
+}
+
+void    ft_end(args *x, args *y)
+{
+    free_args(x);
+    free_args(y);
+}
+
+int main(int ac, char **av, char **env)
+{
+    args x;
+    args y;
+    ft_start(&x, &y, av, env);
+    printf("cmd = %d\n", x.allowed);
+    ft_end(&x, &y);
+    printf("cmd = %s\n", x.path);
 }
