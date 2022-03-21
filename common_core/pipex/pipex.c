@@ -37,6 +37,6 @@ int main(int argc, char **argv, char **env)
     ft_init(&a, argv, env);
     
     v.i = 0;
-    printf("path = ∏%s\n", a.cmd_path);
+    printf("path = ∏∏%s\n", a.cmd_path);
     return (0);
 }*/

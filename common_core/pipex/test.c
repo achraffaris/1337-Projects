@@ -35,21 +35,37 @@ void    ft_initialize(args *a, char **av, char **env, int index)
 }
 
 
-
-void    in_execution(args *x)
+int on_success(args *x, args *y, int n)
 {
-
+    if (n == 0)
+        return (1);
+    else if (n == -1)
+        ft_end(x, y);
+    return (0);
 }
 
-void    out_execution(args *y)
+void    in_execution(args *x, int *fd)
 {
-
+    dup2(1, fd[1]);
+    execve(y->path, y->cmds, 0);
 }
 
-void    raise_error()
+void    out_execution(args *y, int *fd)
 {
-    perror(NULL);
+    if (on_success(dup2(fd[0], 0)))
+        if (on_success(execve(x->path, x->cmds, 0)))
 }
+
+int    child_on_success(args *x, args *y, int n)
+{
+    if (n == -1)
+        ft_end(x, y);
+    else if (n == 0)
+        return (1);
+    return (0);
+    
+}
+
 
 void    ft_start(args *x, args *y)
 {
@@ -57,30 +73,28 @@ void    ft_start(args *x, args *y)
     int pid2;
     int fd[2];
 
-    int f = open("input", O_RDWR);
-
-    pipe(fd);
-    pid1 = fork();
-    if (pid1 == 0)
+    if (on_success(x, y, pipe(fd)));
     {
-        pid2 = fork();
-        if (pid2 == 0)
+        pid1 = fork();
+        if (child_on_success(x, y, pid1))
         {
-            dup2(1, fd[1]);
-            execve(y->path, y->cmds, 0);
+            pid2 = fork();
+            if (child_on_success(x, y, pid2))
+                if (on_success(dup2(fd[0], 0)))
+                    if (on_success(execve(x->path, x->cmds, 0)))
+            waitpid(pid2, 0, 0);
+            if (on_success(dup2(fd[1], 1)))
+                if (on_success(execve(y->path, y->cmds, 0)))
         }
-        waitpid(pid2, 0, 0);
-        dup2(fd[0], 0);
-        execve(x->path, x->cmds, 0);
+        waitpid(pid1, 0, 0);
     }
-    waitpid(pid1, 0, 0);
 }
 
 void    ft_end(args *x, args *y)
 {
     free_args(x);
     free_args(y);
-    raise_error();
+    perror(NULL);
 }
 
 int main(int ac, char **av, char **env)
