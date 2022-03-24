@@ -6,8 +6,10 @@
 # include <errno.h>
 # include <stdio.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 
 typedef struct args{
+    char *file;
     char **paths;
     char **cmds;
     char *path;

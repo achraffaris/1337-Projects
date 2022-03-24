@@ -1,5 +1,5 @@
 #include "pipex.h"
-
+/*
 char    *get_path_or_none(char **paths, char *cmd)
 {
     var v;
@@ -17,13 +17,21 @@ char    *get_path_or_none(char **paths, char *cmd)
     return (NULL);
 }
 
+void    ft_end(args *x, args *y)
+{
+    free_args(x);
+    free_args(y);
+    perror(NULL);
+}
+
+
 void    ft_initialize(args *a, char **av, char **env, int index)
 {
     if (av[index])
     {
         a->cmds = ft_split(av[index], ' ');
         a->paths = get_paths(env);
-        a->cmd = ft_strjoin(av[index], 0);
+        a->cmd = ft_strjoin(a->cmds[0], 0);
         a->path = get_path_or_none(a->paths, a->cmd);
         if (a->path)
             a->is_valid = 1;
@@ -37,24 +45,11 @@ void    ft_initialize(args *a, char **av, char **env, int index)
 
 int on_success(args *x, args *y, int n)
 {
-    if (n == 0)
-        return (1);
-    else if (n == -1)
+    if (n == -1)
         ft_end(x, y);
-    return (0);
+    return (1);
 }
 
-void    in_execution(args *x, int *fd)
-{
-    dup2(1, fd[1]);
-    execve(y->path, y->cmds, 0);
-}
-
-void    out_execution(args *y, int *fd)
-{
-    if (on_success(dup2(fd[0], 0)))
-        if (on_success(execve(x->path, x->cmds, 0)))
-}
 
 int    child_on_success(args *x, args *y, int n)
 {
@@ -71,30 +66,28 @@ void    ft_start(args *x, args *y)
 {
     int pid1;
     int pid2;
-    int fd[2];
+    int in;
 
-    if (on_success(x, y, pipe(fd)));
+    int out;
+
+    in = open("input", O_RDWR);
+    out = open("output", O_RDWR);
+    int fd[2];
+    
+    if (on_success(x, y, pipe(fd) && on_success(x, y, in) && on_success(x, y, out)));
     {
+        
         pid1 = fork();
         if (child_on_success(x, y, pid1))
-        {
             pid2 = fork();
             if (child_on_success(x, y, pid2))
-                if (on_success(dup2(fd[0], 0)))
-                    if (on_success(execve(x->path, x->cmds, 0)))
-            waitpid(pid2, 0, 0);
-            if (on_success(dup2(fd[1], 1)))
-                if (on_success(execve(y->path, y->cmds, 0)))
-        }
-        waitpid(pid1, 0, 0);
+                dup2(in, 0);
+                if (on_success(x, y, dup2(1, fd[1])))
+                    if (on_success(x, y, execve(x->path, x->cmds, 0)))
+            if (on_success(x, y, dup2(0, fd[0])))
+                if (on_success(x, y, execve(y->path, y->cmds, 0)))
+                    exit(0);
     }
-}
-
-void    ft_end(args *x, args *y)
-{
-    free_args(x);
-    free_args(y);
-    perror(NULL);
 }
 
 int main(int ac, char **av, char **env)
@@ -109,4 +102,4 @@ int main(int ac, char **av, char **env)
         ft_start(&x, &y);
     else
         ft_end(&x, &y);
-}
+}*/

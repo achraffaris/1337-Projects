@@ -29,7 +29,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/workspace/1337-Projects/common_core/pipex/a.out",
-            "args": ["infile","cd utils","wc -l","outfile"],
+            "args": ["infile","cat","wc -l","outfile"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

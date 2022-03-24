@@ -24,8 +24,12 @@ void    free_array(char *arr)
 
 void    free_args(args *a)
 {
-    free_2d_array(a->cmds);
-    free_2d_array(a->paths);
-    free_array(a->cmd);
-    free_array(a->path);
+    if (a)
+    {
+        free_2d_array(a->cmds);
+        free_2d_array(a->paths);
+        free_array(a->cmd);
+        free_array(a->path);
+    }
+    
 }
