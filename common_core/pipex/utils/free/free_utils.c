@@ -21,15 +21,3 @@ void    free_array(char *arr)
         arr = 0;
     }
 }
-
-void    free_args(args *a)
-{
-    if (a)
-    {
-        free_2d_array(a->cmds);
-        free_2d_array(a->paths);
-        free_array(a->cmd);
-        free_array(a->path);
-    }
-    
-}

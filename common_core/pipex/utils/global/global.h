@@ -8,14 +8,17 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 
-typedef struct args{
-    char *file;
-    char **paths;
+typedef struct cmdinfo{
     char **cmds;
     char *path;
     char *cmd;
-    int is_valid;
-} args;
+} t_cmdinfo;
+
+typedef struct args{
+    char **env_paths;
+    char **av;
+    char **env;
+} t_args;
 
 typedef struct var{
     char *tmp;

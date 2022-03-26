@@ -19,7 +19,7 @@ int command_exists(char *path, char *cmd)
     char    *cmd_path;
 
     cmd_path = ft_strjoin(path, cmd);
-    if (on_success(0, 0, access(cmd_path, X_OK)))
+    if (access(cmd_path, X_OK) == 0)
         return (1);
     return (0);
 }
