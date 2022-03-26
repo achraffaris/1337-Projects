@@ -24,83 +24,44 @@ int on_success(int id)
     return (id);
 }
 
-void    in_execution(int *fd, t_args a, int pos)
+void    cmd_execution(t_args a, var *v, int ac)
 {
     t_cmdinfo ci;
-    set_cmdinfo(&ci, a, pos);
-    int pid;
-    int infile;
 
-    infile = open(a.av[1], O_RDONLY);
-    if (on_success(infile) == 0)
-    {
-        pid = fork();
-        if (on_success(pid) == 0)
-        {
-            dup2(infile, 0);
-            dup2(fd[1], 1);
-            close(fd[0]);
-            execve(ci.path, ci.cmds, a.env);
-        }
-        close(fd[0]);
-        close(fd[1]);
-    }
-}
-
-void    out_execution(int *fd, t_args a, int pos)
-{
-    t_cmdinfo ci;
-    int pid;
-    int out;
+    set_cmdinfo(&ci, a, v->pos);
     
-    set_cmdinfo(&ci, a, pos);
-
-    out = open(a.av[pos + 1], O_CREAT, O_RDWR, O_TRUNC, 0644);
-    if (on_success(out) == 0)
-    {
-        pid = fork();
-        if (on_success(pid) == 0)
-        {
-            dup2(out, fd[1]);
-            dup2(out, 1);
-            dup2(fd[0], 0);
-            execve(ci.path, ci.cmds, a.env);
-        }
-        close(fd[0]);
-        close(fd[1]);
+    if (v->pos - 1 == 1){
+        dup2(on_success(open(a.av[1], O_RDONLY)), 0);
+        dup2(v->fd[1], 1);
     }
+    else if (v->pos + 1 == ac - 1)
+    {
+        dup2(v->fd[0], 0);
+        dup2(on_success(open(a.av[ac - 1], O_CREAT, O_TRUNC, O_RDWR, 0777)), 1);
+    }
+    else
+    {
+        dup2(v->fd[0], 0);
+        dup2(v->fd[1], 1);
+    } 
+    execve(ci.path, ci.cmds, a.env);
+        
 }
 
 int main(int ac, char **av, char **env)
 {
-    t_args args;
+    t_args  args;
+    var     v;
+    int     fd[2];
+
     set_args(&args, av, env);
-
-    int fd[2];
-    int i;
-    int fc;
-    int lc;
-
-    fc = 2;
-    lc = ac - 2;
-
-    i = fc;
-    pipe(fd);
-    while (i <= lc)
-    {
-        if (i == fc)
-        {
-            in_execution(fd, args, i);
-  
-        }
-            
-        else if (i == lc)
-        {
-            printf("before in_execution\n");
-            out_execution(fd, args, i);
-            printf("after in_execution\n");
-        }
-        printf("%d\n", i);
-        i++;
-    }
+    pipe(v.fd);
+    v.pos = 2;
+    if (fork() == 0)
+        cmd_execution(args, &v, ac);
+    wait(0);
+    v.pos++;
+    if (fork() == 0)
+        cmd_execution(args, &v, ac);
+    wait(0);
 }

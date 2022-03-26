@@ -22,6 +22,9 @@ typedef struct args{
 
 typedef struct var{
     char *tmp;
+    int fd[2];
+    int rd;
+    int wr;
     int i;
     int j;
     int len;
