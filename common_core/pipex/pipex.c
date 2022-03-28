@@ -29,23 +29,23 @@ void    cmd_execution(t_args a, var *v, int ac)
     t_cmdinfo ci;
 
     set_cmdinfo(&ci, a, v->pos);
-    
     if (v->pos - 1 == 1){
         dup2(on_success(open(a.av[1], O_RDONLY)), 0);
         dup2(v->fd[1], 1);
+        close(v->fd[0]);
     }
     else if (v->pos + 1 == ac - 1)
     {
         dup2(v->fd[0], 0);
-        dup2(on_success(open(a.av[ac - 1], O_CREAT, O_TRUNC, O_RDWR, 0777)), 1);
+        close(v->fd[1]);
+        dup2(on_success(open(a.av[ac - 1], O_CREAT | O_TRUNC | O_RDWR, 0777)), 1);
     }
     else
     {
-        dup2(v->fd[0], 0);
         dup2(v->fd[1], 1);
-    } 
+        dup2(v->fd[0], 0);
+    }
     execve(ci.path, ci.cmds, a.env);
-        
 }
 
 int main(int ac, char **av, char **env)
@@ -55,13 +55,13 @@ int main(int ac, char **av, char **env)
     int     fd[2];
 
     set_args(&args, av, env);
-    pipe(v.fd);
     v.pos = 2;
-    if (fork() == 0)
-        cmd_execution(args, &v, ac);
-    wait(0);
-    v.pos++;
-    if (fork() == 0)
-        cmd_execution(args, &v, ac);
+    pipe(v.fd);
+    while (v.pos < ac)
+    {
+        if (fork() == 0)
+            cmd_execution(args, &v, ac);
+        v.pos++;
+    }
     wait(0);
 }
