@@ -1,6 +1,6 @@
 # Projects made during my journey in 1337 Coding School | 42 Network
 
-Common Core
+Common Core Projects
   ------
   * LIBFT:
 	  * Useful library for future projects in C.
@@ -18,4 +18,3 @@ Common Core
       * C program that handles pipes (Introduction to Processes)  
       * Complexity: MEDIUM
   * PUSH_SWAP:
-  
