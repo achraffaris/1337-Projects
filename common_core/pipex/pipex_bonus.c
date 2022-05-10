@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/05 10:28:49 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/17 16:20:40 by afaris           ###   ########.fr       */
+/*   Created: 2022/04/05 10:29:58 by afaris            #+#    #+#             */
+/*   Updated: 2022/04/17 16:17:43 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
-void	first_execution(t_var v, int **fd, int infile)
+void	first_execution(t_var v, int **fd)
 {
-	dup2(infile, 0);
+	dup2(v.infile, 0);
 	dup2(fd[v.i][1], 1);
 	close(fd[v.i][0]);
 }
 
-void	last_execution(t_args a, t_var v, int **fd, int ac)
+void	last_execution(t_var v, int **fd)
 {
 	close(fd[v.i - 1][1]);
 	dup2(fd[v.i - 1][0], 0);
-	dup2(on_success(open(a.av[ac - 1], O_CREAT | O_TRUNC | O_RDWR, 0777)), 1);
+	dup2(v.outfile, 1);
 }
 
 void	mid_executions(t_var v, int **fd)
@@ -34,23 +34,19 @@ void	mid_executions(t_var v, int **fd)
 	dup2(fd[v.i - 1][0], 0);
 }
 
-void	normal_execution(t_args a, int **fd, int ac)
+void	normal_execution(t_args a, int **fd, int ac, t_var v)
 {
 	t_cmdinfo	ci;
-	t_var		v;
 
-	v.pos = 2;
-	v.i = 0;
-	v.j = valid_file(a.av[1], &v);
 	while (v.pos < ac - 1)
 	{
 		set_cmdinfo(&ci, a, v.pos);
 		if (fork() == 0)
 		{
-			if (v.pos - 1 == 1)
-				first_execution(v, fd, v.j);
+			if (v.pos - 1 == v.pre_arg)
+				first_execution(v, fd);
 			else if (v.pos + 1 == ac - 1)
-				last_execution(a, v, fd, ac);
+				last_execution(v, fd);
 			else
 				mid_executions(v, fd);
 			execve(ci.path, ci.cmds, a.env);
@@ -66,19 +62,21 @@ int	main(int ac, char **av, char **env)
 {
 	t_args	args;
 	int		**fd;
-	int		i;
+	t_var	v;
 
-	i = 2;
-	fd = allocate_fds(ac - 4);
-	if (ac != 5)
+	fd = 0;
+	if (ac < 5)
 		return (0);
 	set_args(&args, av, env);
-	normal_execution(args, fd, ac);
-	while (i < ac - 1)
+	v = setup_variables(args, ac);
+	fd = allocate_fds(v.npipe);
+	normal_execution(args, fd, ac, v);
+	v.pos = 2;
+	while (v.pos < ac - 1)
 	{
 		wait(0);
-		i++;
+		v.pos++;
 	}
-	close_free_fds(fd, ac - 4);
+	close_free_fds(fd, v.npipe);
 	free_2d_array(args.env_paths);
 }

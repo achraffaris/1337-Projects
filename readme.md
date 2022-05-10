@@ -15,3 +15,7 @@ Common Core
 	  * C program that return each line from a file.
       * Complexity: MEDIUM
   * PIPEX: 
+      * C program that handles pipes (Introduction to Processes)  
+      * Complexity: MEDIUM
+  * PUSH_SWAP:
+  
