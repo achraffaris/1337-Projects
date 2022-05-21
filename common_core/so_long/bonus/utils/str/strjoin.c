@@ -1,36 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_swap.h                                        :+:      :+:    :+:   */
+/*   strjoin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/10 11:47:50 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/11 16:14:23 by afaris           ###   ########.fr       */
+/*   Created: 2022/05/18 11:01:56 by afaris            #+#    #+#             */
+/*   Updated: 2022/05/21 15:00:47 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PUSH_SWAP_H
-# define PUSH_SWAP_H
-# define INT_MAX 2147483647
-# define INT_MIN 2147483648
+#include "../../so_long_bonus.h"
 
-#include <stdlib.h>
-#include <unistd.h>
-
-typedef struct stack
+char	*ft_strjoin(char *s1, char *s2)
 {
-    int size;
-    int *arr;
-} t_stack;
+	char	*str;
+	int		len;
+	int		i;
+	int		j;
 
-int     ft_strcmp(const char *s1, const char *s2);
-void    raise_error();
-t_stack clean_data(char **av, int ac);
-int     ft_atoi(const char *nptr);
-int is_number(char c);
-int is_sign(char c);
-
-
-
-#endif
+	i = 0;
+	if (!s1 || !s2)
+		return (NULL);
+	len = len_count(s1) + len_count(s2);
+	str = (char *)malloc(sizeof(char) * (len + 1));
+	if (!str)
+		return (0);
+	while (s1[i])
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j])
+	{
+		str[i++] = s2[j++];
+	}
+	str[i] = '\0';
+	return (str);
+}

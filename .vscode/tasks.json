@@ -6,7 +6,7 @@
                 {
                     "label": "tasks",
                     "type": "shell",
-                    "command": "cd /workspace/1337-Projects/common_core/push_swap/ && gcc -g utils/*.c push_swap.c && ./a.out",
+                    "command": "cd /workspace/1337-Projects/common_core/so_long/ && gcc -g so_long.c utils/*.c utils/*/*.c",
                     "group": {
                         "kind": "build",
                         "isDefault": true

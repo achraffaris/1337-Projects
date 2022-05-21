@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 11:51:20 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/10 12:58:45 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/11 16:29:42 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,16 @@ int	ft_atoi(const char *nptr)
 	s = 1;
 	res = 0;
 	i = 0;
-	if (nptr[i] == '-' || nptr[i] == '+')
+	if (is_sign(nptr[i]))
 	{
-		if (nptr[i] == '-')
+		if (nptr[i] == '-' && is_number())
 			s = -1;
 		i++;
 	}
+
 	while (nptr[i])
 	{
-		if (nptr[i] < '0' || nptr[i] > '9')
+		if (!is_number(nptr[i]) || valid_interger(res, s))
         	raise_error();
 		res = res * 10 + (nptr[i] - '0');
 		i++;
@@ -73,25 +74,26 @@ int duplicated_args(char **av, int ac)
     return (0);
 }
 
-int *clean_data(char **av, int ac)
+t_stack clean_data(char **av, int ac)
 {
     int n;
     int i;
-    int *arr;
+    t_stack s;
 
-    arr = malloc(sizeof(int) * (ac));
-    n = 0;
+    s.size = ac - 1;
+    s.arr = malloc(sizeof(int) * (s.size));
+    n = s.size - 1;
     i = 1;
     if (!duplicated_args(av, ac))
     {
-        while (i < ac && av[i])
+        while (i <= s.size && av[i])
         {
-            arr[n] = ft_atoi(av[i]);
+            s.arr[n] = ft_atoi(av[i]);
             i++;
-            n++;
+            n--;
         }
     }
     else
         raise_error();
-    return (arr);
+    return (s);
 }

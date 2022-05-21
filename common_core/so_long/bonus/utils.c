@@ -1,36 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_swap.h                                        :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/10 11:47:50 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/11 16:14:23 by afaris           ###   ########.fr       */
+/*   Created: 2022/05/15 13:02:51 by afaris            #+#    #+#             */
+/*   Updated: 2022/05/21 15:01:06 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PUSH_SWAP_H
-# define PUSH_SWAP_H
-# define INT_MAX 2147483647
-# define INT_MIN 2147483648
+#include "so_long_bonus.h"
 
-#include <stdlib.h>
-#include <unistd.h>
-
-typedef struct stack
+void	raise_error(char *err_msg)
 {
-    int size;
-    int *arr;
-} t_stack;
+	write(2, "Error\n", 7);
+	if (!err_msg)
+		perror(0);
+	write(2, err_msg, len_count(err_msg));
+	exit(1);
+}
 
-int     ft_strcmp(const char *s1, const char *s2);
-void    raise_error();
-t_stack clean_data(char **av, int ac);
-int     ft_atoi(const char *nptr);
-int is_number(char c);
-int is_sign(char c);
+void	free_2d(char **arr)
+{
+	int	i;
 
+	i = 0;
+	if (arr)
+	{
+		while (arr[i])
+		{
+			free_arr(arr[i]);
+			i++;
+		}
+		free(arr);
+	}
+}
 
-
-#endif
+void	free_arr(char *arr)
+{
+	if (arr)
+	{
+		free(arr);
+		arr = NULL;
+	}
+}

@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 12:14:05 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/10 12:14:59 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/11 16:10:28 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,14 @@ int	ft_strcmp(const char *s1, const char *s2)
 		i++;
 	}
 	return (0);
+}
+
+int is_number(char c)
+{
+	return (c >= '0' && c <= '9');
+}
+
+int is_sign(char c)
+{
+	return (c == '+' || c == '-');
 }
