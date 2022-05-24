@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 16:16:13 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/21 14:52:42 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 09:49:46 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,10 @@ void	map_init(t_map *m)
 {
 	m->clicks = 0;
 	m->collectibles = 0;
-	m->enemies = 0;
 	m->player_index.i = 0;
 	m->player_index.j = 0;
 	m->player_pos.x = 0;
 	m->player_pos.y = 0;
-	m->i = 0;
 }
 
 int	main(int ac, char **av)
@@ -47,8 +45,12 @@ int	main(int ac, char **av)
 		return (0);
 	m = get_map(av[1]);
 	m.mlx = mlx_init();
+	if (!m.mlx)
+		raise_error("Unable to set up the connection to the graphical system!");
 	m.mlx_win = mlx_new_window(m.mlx,
 			m.screen_width, m.screen_height, "afaris");
+	if (!m.mlx_win)
+		raise_error("Unable to create a new window!");
 	map_init(&m);
 	render_all_images(&m);
 	mlx_hook(m.mlx_win, KEY_PRESS, 0, events_manager, &m);

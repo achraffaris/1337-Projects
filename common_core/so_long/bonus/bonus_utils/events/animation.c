@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 07:53:11 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/21 15:00:12 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 11:35:29 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,17 @@ void	random_animation(t_map *m, int i)
 
 	p.x = m->enemies_list[i].x;
 	p.y = m->enemies_list[i].y;
-	render_signle_image(SPACE_PATH, m->mlx, m->mlx_win, p);
+	mlx_put_image_to_window(m->mlx, m->mlx_win, m->enm_images.space, p.x, p.y);
 	if (m->i == 4)
-		render_signle_image(ENEMY_PATH, m->mlx, m->mlx_win, p);
+		mlx_put_image_to_window(m->mlx, m->mlx_win, m->enm_images.e1, p.x, p.y);
 	else if (m->i == 3)
-		render_signle_image(ENEMY_PATH_2, m->mlx, m->mlx_win, p);
+		mlx_put_image_to_window(m->mlx, m->mlx_win, m->enm_images.e2, p.x, p.y);
 	else if (m->i == 2)
-		render_signle_image(ENEMY_PATH_3, m->mlx, m->mlx_win, p);
+		mlx_put_image_to_window(m->mlx, m->mlx_win, m->enm_images.e3, p.x, p.y);
 	else if (m->i == 1)
-		render_signle_image(ENEMY_PATH_4, m->mlx, m->mlx_win, p);
+		mlx_put_image_to_window(m->mlx, m->mlx_win, m->enm_images.e4, p.x, p.y);
 	else if (m->i == 0)
-		render_signle_image(ENEMY_PATH_5, m->mlx, m->mlx_win, p);
+		mlx_put_image_to_window(m->mlx, m->mlx_win, m->enm_images.e5, p.x, p.y);
 	m->i++;
 	if (m->i == 5)
 		m->i = 0;
@@ -36,14 +36,10 @@ void	random_animation(t_map *m, int i)
 
 int	animate_it(t_map *m)
 {
-	int	i;
-
-	i = 0;
-	ft_delay(0.055);
-	while (i < m->enemies)
-	{
-		random_animation(m, i);
-		i++;
-	}
+	ft_delay(700);
+	random_animation(m, m->j);
+	m->j++;
+	if (m->j >= m->enemies)
+		m->j = 0;
 	return (0);
 }

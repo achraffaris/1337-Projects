@@ -6,11 +6,11 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 17:50:38 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/21 14:49:39 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 11:07:06 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include "bonus/so_long_bonus.h"
 
 int	events_manager(int key, t_map *m)
 {
@@ -23,7 +23,7 @@ int	events_manager(int key, t_map *m)
 	else if (key == MOVE_RIGHT)
 		go_right(m);
 	else if (key == KEY_ESC)
-		exit(0);
+		happy_end(m);
 	return (1);
 }
 
@@ -37,22 +37,30 @@ void	map_init(t_map *m)
 	m->player_pos.x = 0;
 	m->player_pos.y = 0;
 	m->i = 0;
+	m->j = 0;
+	img_init(m);
 }
 
 int	main(int ac, char **av)
 {
 	t_map	m;
+	int		i;
 
+	i = 0;
 	if (ac != 2)
 		return (0);
 	m = get_map(av[1]);
 	m.mlx = mlx_init();
+	if (!m.mlx)
+		raise_error("Unable to set up the connection to the graphical system!");
 	m.mlx_win = mlx_new_window(m.mlx,
 			m.screen_width, m.screen_height, "afaris");
+	if (!m.mlx_win)
+		raise_error("Unable to create a new window!");
 	map_init(&m);
 	render_all_images(&m);
 	mlx_hook(m.mlx_win, KEY_PRESS, 0, events_manager, &m);
-	mlx_hook(m.mlx_win, ON_DESTROY, 0, game_over, &m);
+	mlx_hook(m.mlx_win, ON_DESTROY, 0, happy_end, &m);
 	mlx_loop_hook(m.mlx, animate_it, &m);
 	mlx_loop(m.mlx);
 	free_2d(m.map);

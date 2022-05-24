@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 14:06:31 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/21 14:44:59 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 11:31:30 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	go_up(t_map *m)
 
 	target = m->map[m->player_index.i - 1][m->player_index.j];
 	if (target == EXIT && m->collectibles <= 0)
-		game_over(m);
+		happy_end(m);
 	else if (target == COLLECTIBLE && m->collectibles > 0)
 	{
 		m->collectibles--;
@@ -41,7 +41,7 @@ void	go_down(t_map *m)
 
 	target = m->map[m->player_index.i + 1][m->player_index.j];
 	if (target == EXIT && m->collectibles <= 0)
-		game_over(m);
+		happy_end(m);
 	else if (target == COLLECTIBLE && m->collectibles > 0)
 	{
 		m->collectibles--;
@@ -65,7 +65,7 @@ void	go_left(t_map *m)
 
 	target = m->map[m->player_index.i][m->player_index.j - 1];
 	if (target == EXIT && m->collectibles <= 0)
-		game_over(m);
+		happy_end(m);
 	else if (target == COLLECTIBLE && m->collectibles > 0)
 	{
 		m->collectibles--;
@@ -89,7 +89,7 @@ void	go_right(t_map *m)
 
 	target = m->map[m->player_index.i][m->player_index.j + 1];
 	if (target == EXIT && m->collectibles <= 0)
-		game_over(m);
+		happy_end(m);
 	else if (target == COLLECTIBLE && m->collectibles > 0)
 	{
 		m->collectibles--;

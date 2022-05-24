@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 09:57:16 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/21 15:00:24 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 10:09:03 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ t_pos	*get_enemies_positions(t_map *m)
 	t_var	v;
 
 	p = malloc(sizeof(t_pos) * m->enemies);
+	if (!p)
+		raise_error("Unable to allocate!");
 	var_init(&v, &t);
 	while (m->map[v.i] && v.i < m->wall_heigth)
 	{
@@ -45,6 +47,7 @@ t_pos	*get_enemies_positions(t_map *m)
 			{
 				p[v.k].x = t.x;
 				p[v.k].y = t.y;
+				p[v.k].i = 0;
 				v.k++;
 			}
 			t.x += BLOC_SIZE;

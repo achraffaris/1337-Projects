@@ -19,24 +19,24 @@ SRCS = 	so_long.c \
 		utils/str/strjoin.c \
 		utils/events/movements.c \
 		utils/events/events_manager.c \
-		utils/events/utils.c \
 		
 BSRCS = so_long_bonus.c \
-		bonus/utils/gnl/get_next_line_utils.c \
-		bonus/utils/gnl/get_next_line.c \
-		bonus/utils/map/map_checker.c \
-		bonus/utils/map/images_renderer.c \
-		bonus/utils/map/map.c \
-		bonus/utils/map/map_checker.c \
-		bonus/utils/str/str_utils.c \
-		bonus/utils/utils.c \
-		bonus/utils/str/itoa.c \
-		bonus/utils/str/strjoin.c \
-		bonus/utils/events/movements.c \
-		bonus/utils/events/events_manager.c \
-		bonus/utils/events/animation.c \
-		bonus/utils/events/utils.c
-
+		bonus/bonus_utils/gnl/get_next_line_utils.c \
+		bonus/bonus_utils/gnl/get_next_line.c \
+		bonus/bonus_utils/map/map_checker.c \
+		bonus/bonus_utils/map/images_renderer.c \
+		bonus/bonus_utils/map/map.c \
+		bonus/bonus_utils/map/map_checker.c \
+		bonus/bonus_utils/str/str_utils.c \
+		bonus/bonus_utils/utils.c \
+		bonus/bonus_utils/str/itoa.c \
+		bonus/bonus_utils/str/strjoin.c \
+		bonus/bonus_utils/events/movements.c \
+		bonus/bonus_utils/events/events_manager.c \
+		bonus/bonus_utils/events/animation.c \
+		bonus/bonus_utils/events/utils.c \
+		bonus/bonus_utils/map/images_init.c
+		
 BOBJS = $(BSRCS:.c=.o)
 OBJS = $(SRCS:.c=.o)
 

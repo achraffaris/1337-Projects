@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 12:39:00 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/21 14:51:46 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 10:10:19 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ void	fill_map(t_map *m)
 	if (!fd)
 		raise_error(0);
 	m->map = malloc(sizeof(char *) * (m->wall_heigth + 1));
+	if (!m->map)
+		raise_error("Unable to allocate!");
 	tmp = get_next_line(fd);
 	while (tmp)
 	{
