@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 16:16:44 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/24 11:52:20 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 15:09:10 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,31 +99,31 @@ typedef struct map
 
 }	t_map;
 
-void	raise_error(void *err_msg);
+void	raise_error(char *err_msg);
 char	*get_next_line(int fd);
-int		len_count(void *str);
-char	*end_with(void *str, void *end);
-t_map	get_map(void *filename);
+int		len_count(char *str);
+char	*end_with(char *str, char *end);
+t_map	get_map(char *filename);
 int		exists(t_map m, char c, int many);
 int		rectangular_map(t_map m);
 int		illegal_chars_exist(t_map m);
 void	ft_putnbr(int n);
 char	*ft_itoa(int n);
-char	*ft_strjoin(void *s1, void *s2);
+char	*ft_strjoin(char *s1, char *s2);
 void	go_up(t_map *m);
 void	go_down(t_map *m);
 void	go_left(t_map *m);
 void	go_right(t_map *m);
 void	display_score(t_map *m);
-void	put_img(void *path, void *mlx, void *mlx_win, t_pos p);
+void	put_img(char *path, void *mlx, void *mlx_win, t_pos p);
 void	put_images(t_map *m);
 int		game_over(t_map *m);
 int		happy_end(t_map *m);
 void	free_2d(char **arr);
-void	free_arr(void *arr);
+void	free_arr(char *arr);
 void	check_map_validity(t_map m);
 void	render_all_images(t_map *m);
-void	render_signle_image(void *path, void *mlx, void *mlx_win, t_pos p);
+void	render_signle_image(char *path, void *mlx, void *mlx_win, t_pos p);
 void	img_init(t_map *m);
 
 #endif

@@ -6,13 +6,13 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 13:02:51 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/21 15:01:06 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 15:09:16 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long_bonus.h"
 
-void	raise_error(char *err_msg)
+void	raise_error(char *err_msg, t_map *m)
 {
 	write(2, "Error\n", 7);
 	if (!err_msg)

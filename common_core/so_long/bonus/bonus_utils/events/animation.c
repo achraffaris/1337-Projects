@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/19 07:53:11 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/24 11:35:29 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 14:20:17 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	random_animation(t_map *m, int i)
 
 int	animate_it(t_map *m)
 {
-	ft_delay(700);
+	ft_delay(500);
 	random_animation(m, m->j);
 	m->j++;
 	if (m->j >= m->enemies)

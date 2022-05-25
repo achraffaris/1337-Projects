@@ -4,7 +4,7 @@ NAME_BONUS = so_long_bonus.a
 CC = cc
 CFLAGS = -Wall -Wextra -Werror 
 AR = ar rc
-MLX = -L /usr/local/lib -lmlx -framework OpenGl -framework Appkit
+MLX = -L /usr/local/lib -lmlx -framework OpenGl -framework Appkit 
 
 SRCS = 	so_long.c \
 		utils/gnl/get_next_line_utils.c \
@@ -43,23 +43,23 @@ OBJS = $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	rm -rf $(NAME_BONUS)
-	$(AR) $(NAME) $(OBJS)
-	$(CC) $(CFLAGS) $(NAME) $(MLX) -o so_long 
+	@rm -rf $(NAME_BONUS)
+	@$(AR) $(NAME) $(OBJS)
+	@$(CC) $(CFLAGS) $(NAME) $(MLX) -o so_long
 
 bonus: $(NAME_BONUS)
 
 $(NAME_BONUS): $(BOBJS)
-	rm -rf $(NAME)
-	$(AR) $(NAME_BONUS) $(BOBJS)
-	$(CC) $(CFLAGS) $(NAME_BONUS) $(MLX) -o so_long
+	@rm -rf $(NAME)
+	@$(AR) $(NAME_BONUS) $(BOBJS)
+	@$(CC) $(CFLAGS) $(NAME_BONUS) $(MLX) -o so_long 
 
 clean:
-	rm -rf $(OBJS) $(BOBJS)
+	@rm -rf $(OBJS) $(BOBJS)
 
 fclean: clean
-	rm -rf $(NAME) $(NAME_BONUS)
-	rm -rf so_long
+	@rm -rf $(NAME) $(NAME_BONUS)
+	@rm -rf so_long
 
 re : fclean all
 

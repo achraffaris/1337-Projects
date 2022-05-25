@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 12:44:32 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/24 10:06:43 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 15:52:05 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,16 @@ char	*end_with(char *str, char *end)
 {
 	int	strlen;
 	int	endlen;
-	int	i;
 
-	i = 0;
 	strlen = len_count(str);
 	endlen = len_count(end);
+	if (strlen == endlen)
+		raise_error("Invalid File Format!\n");
 	while (endlen >= 0 && strlen >= 0)
 	{
 		if (str[strlen--] != end[endlen--])
 			raise_error("Invalid File Format!\n");
 	}
-	if (endlen == strlen)
-		raise_error("Invalid File Format!\n");
 	return (str);
 }
 

@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/18 13:04:18 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/24 11:51:52 by afaris           ###   ########.fr       */
+/*   Updated: 2022/05/24 14:16:26 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	display_score(t_map *m)
 int	game_over(t_map *m)
 {
 	free_2d(m->map);
-	write(1, "Game over :( ... Try Again!\n", 29);
+	write(1, "Game over :D ... Try Again!\n", 29);
 	exit(0);
 	return (0);
 }
