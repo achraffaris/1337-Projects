@@ -18,6 +18,11 @@ Common Core Projects
       * C program that handles pipes (Introduction to Processes)  
       * Complexity: MEDIUM
   * PUSH_SWAP:
+      * Sorting a stack with less instructions
+      * Complexity: 
   * SO_LONG:
       * Creating a 2D game using Minilibx (c language).
       * Complexity: EASY
+  * PHILOSOPHERS:
+      * Introduction to Threads & Mutex
+      * Complexity: 
