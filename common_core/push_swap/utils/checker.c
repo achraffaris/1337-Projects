@@ -1,22 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ps_checker.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/10 11:51:20 by afaris            #+#    #+#             */
-/*   Updated: 2022/05/11 16:29:42 by afaris           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../push_swap.h"
-
-void    raise_error()
-{
-    write(2, "Error\n", 7);
-    exit(1);
-}
 
 int valid_interger(long long res, int s)
 {
@@ -36,13 +18,12 @@ int	ft_atoi(const char *nptr)
 	s = 1;
 	res = 0;
 	i = 0;
-	if (is_sign(nptr[i]))
+	if (is_sign(nptr[i]) && is_number(nptr[i + 1]))
 	{
-		if (nptr[i] == '-' && is_number())
+		if (nptr[i] == '-')
 			s = -1;
 		i++;
 	}
-
 	while (nptr[i])
 	{
 		if (!is_number(nptr[i]) || valid_interger(res, s))
@@ -74,6 +55,8 @@ int duplicated_args(char **av, int ac)
     return (0);
 }
 
+
+
 t_stack clean_data(char **av, int ac)
 {
     int n;
@@ -82,6 +65,9 @@ t_stack clean_data(char **av, int ac)
 
     s.size = ac - 1;
     s.arr = malloc(sizeof(int) * (s.size));
+    s.top = s.size - 1;
+    if (!s.arr)
+        raise_error();
     n = s.size - 1;
     i = 1;
     if (!duplicated_args(av, ac))
@@ -94,6 +80,8 @@ t_stack clean_data(char **av, int ac)
         }
     }
     else
+        raise_error();
+    if (is_sorted(s))
         raise_error();
     return (s);
 }
