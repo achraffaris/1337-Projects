@@ -6,7 +6,7 @@
 /*   By: gitpod <gitpod@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:45:50 by gitpod            #+#    #+#             */
-/*   Updated: 2022/06/07 18:25:45 by gitpod           ###   ########.fr       */
+/*   Updated: 2022/06/07 19:05:56 by gitpod           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,29 +45,41 @@ void    simulation_init(simulation_t *s, char **av)
 void    *simulation(void *philos)
 {
     philo_t *ph = (philo_t *)philos;
-    printf("Hi Iam philo no.%d\n", ph->id);
-
+    while (1337)
+    {
+        printf("sim\n");
+        pthread_mutex_lock(ph->left_fork);
+        printf("Philo no.%d has taken the left fork\n", ph->id);
+        pthread_mutex_lock(ph->right_fork);
+        printf("Philo no.%d has taken the right fork\n", ph->id);
+        printf("Philo no.%d is eating ...\n", ph->id);
+        sleep(5);
+        pthread_mutex_unlock(ph->left_fork);
+        pthread_mutex_unlock(ph->right_fork);
+    }
     return (0);
 }
 
-void    philos_init(philo_t *ph, simulation_t *s)
+philo_t    *philos_init(simulation_t *s)
 {
     int i;
+    philo_t *ph;
 
+    ph = malloc(sizeof(philo_t) * s->n_philos);
     i = 0;
     while (i < s->n_philos)
     {
         ph[i].id = i;
         ph[i].s = s;
-        ph[i].left_fork = s->forks[i];
+        ph[i].left_fork = &s->forks[i];
         if (i == s->n_philos - 1)
-            ph[i].right_fork = s->forks[0];
+            ph[i].right_fork = &s->forks[0];
         else
-            ph[i].right_fork = s->forks[i + 1];
+            ph[i].right_fork = &s->forks[i + 1];
         pthread_create(&ph[i].th_id, NULL, &simulation, &ph[i]);
         i++;
     }
-    
+    return (ph);
 }
 
 void    wait_threads(philo_t *ph)
@@ -77,7 +89,7 @@ void    wait_threads(philo_t *ph)
     i = 0;
     while (i < ph->s->n_philos)
     {
-        pthread_join(ph->th_id, NULL);
+        pthread_join(ph[i].th_id, NULL);
         i++;
     }
 }
@@ -89,8 +101,6 @@ int main(int ac, char **av)
     if (ac == 7)
         return (0);
     simulation_init(&s, av);
-    ph = malloc(sizeof(philo_t) * s.n_philos);
-    philos_init(ph, &s);
+    ph = philos_init(&s);
     wait_threads(ph);
-    
 }

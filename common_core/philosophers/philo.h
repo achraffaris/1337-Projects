@@ -6,7 +6,7 @@
 /*   By: gitpod <gitpod@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 10:09:28 by afaris            #+#    #+#             */
-/*   Updated: 2022/06/07 18:14:43 by gitpod           ###   ########.fr       */
+/*   Updated: 2022/06/07 18:41:10 by gitpod           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ typedef struct philo
     int id;
     pthread_t th_id;
     simulation_t *s;
-    pthread_mutex_t left_fork;
-    pthread_mutex_t right_fork;
+    pthread_mutex_t *left_fork;
+    pthread_mutex_t *right_fork;
 } philo_t;
 
 
