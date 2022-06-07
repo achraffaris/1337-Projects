@@ -6,7 +6,7 @@
                 {
                     "label": "tasks",
                     "type": "shell",
-                    "command": "cd /workspace/1337-Projects/common_core/push_swap/ && gcc -g push_swap.c utils/*.c",
+                    "command": "cd /workspace/1337-Projects/common_core/philosophers/ && gcc -g -pthread philo.c utils/*.c",
                     "group": {
                         "kind": "build",
                         "isDefault": true
