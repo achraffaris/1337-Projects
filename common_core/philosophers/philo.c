@@ -6,7 +6,7 @@
 /*   By: gitpod <gitpod@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:45:50 by gitpod            #+#    #+#             */
-/*   Updated: 2022/06/09 19:07:18 by gitpod           ###   ########.fr       */
+/*   Updated: 2022/06/09 19:38:05 by gitpod           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,13 @@ fork_t *create_forks(int philos)
     return forks;
 }
 
+void    print_record(char *record, philo_t *ph)
+{
+    pthread_mutex_lock(&ph->s->mutex_print);
+    printf("%d %s\n", ph->id, record);
+    pthread_mutex_unlock(&ph->s->mutex_print);
+}
+
 void    simulation_init(simulation_t *s, char **av)
 {
     s->n_philos = ft_atoi(av[1]);
@@ -52,8 +59,8 @@ void is_alive(philo_t *ph)
     gettimeofday(&current_time, NULL);
     if (current_time.tv_usec > ph->expected_to_die.tv_usec)
     {
-        printf("%d died\n", ph->id);
         ph->s->all_alive = FALSE;
+        print_record("died", ph);
     }
 }
 void    *simulation(void *philos)
@@ -68,22 +75,22 @@ void    *simulation(void *philos)
         {
             pthread_mutex_lock(&ph->left_fork->mutex_fork);
             ph->left_fork->status = UNAVAILABLE;
-            printf("%d has taken a fork\n", ph->id);
+            print_record("has taken a fork", ph);
             pthread_mutex_lock(&ph->right_fork->mutex_fork);
             ph->right_fork->status = UNAVAILABLE;
-            printf("%d has taken a fork\n", ph->id);
+            print_record("has taken a fork", ph);
             ph->status = IS_EATING;
             gettimeofday(&ph->current_time, NULL);
             ph->expected_to_die.tv_usec = ph->current_time.tv_usec + (ph->s->die_time * MICROSECOND);
-            printf("%d is eating\n", ph->id);
+            print_record("is eating", ph);
             usleep(ph->s->eat_time * MICROSECOND);
             ph->left_fork->status = AVAILABLE;
             ph->right_fork->status = AVAILABLE;
             pthread_mutex_unlock(&ph->left_fork->mutex_fork);
             pthread_mutex_unlock(&ph->right_fork->mutex_fork);
-            printf("%d is sleeping\n", ph->id);
+            print_record("is sleeping", ph);
             usleep(ph->s->sleep_time  * MICROSECOND);
-            printf("%d is thinking ...\n", ph->id);
+            print_record("is thinking", ph);
         }
     }
     return (0);

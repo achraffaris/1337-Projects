@@ -6,7 +6,7 @@
 /*   By: gitpod <gitpod@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 10:09:28 by afaris            #+#    #+#             */
-/*   Updated: 2022/06/09 19:06:11 by gitpod           ###   ########.fr       */
+/*   Updated: 2022/06/09 19:25:57 by gitpod           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 #define IS_THIKING 4
 #define TRUE 1
 #define FALSE 0
-#define MICROSECOND 0
+#define MICROSECOND 1000
 
 typedef struct fork
 {
