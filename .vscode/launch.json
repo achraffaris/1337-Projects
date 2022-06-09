@@ -29,7 +29,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/workspace/1337-Projects/common_core/philosophers/a.out",
-            "args": ["7", "800", "200", "200", "7"],
+            "args": ["3", "800", "200", "200", "7"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

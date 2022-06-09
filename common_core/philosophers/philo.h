@@ -6,7 +6,7 @@
 /*   By: gitpod <gitpod@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 10:09:28 by afaris            #+#    #+#             */
-/*   Updated: 2022/06/07 18:41:10 by gitpod           ###   ########.fr       */
+/*   Updated: 2022/06/09 19:06:11 by gitpod           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,24 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <sys/time.h>
+
+
+#define AVAILABLE 1
+#define UNAVAILABLE 0
+#define IS_SLEEPING 2
+#define IS_EATING 3
+#define IS_THIKING 4
+#define TRUE 1
+#define FALSE 0
+#define MICROSECOND 0
+
+typedef struct fork
+{
+    int id;
+    pthread_mutex_t mutex_fork;
+    int status;
+} fork_t;
 
 typedef struct simulation
 {
@@ -26,9 +44,9 @@ typedef struct simulation
     int eat_time;
     int die_time;
     int n_eat;
-    pthread_mutex_t *forks;
-    pthread_mutex_t mutex;
-    int thread_ready;
+    fork_t *forks;
+    pthread_mutex_t mutex_print;
+    int all_alive;
 } simulation_t;
 
 
@@ -37,10 +55,12 @@ typedef struct philo
     int id;
     pthread_t th_id;
     simulation_t *s;
-    pthread_mutex_t *left_fork;
-    pthread_mutex_t *right_fork;
+    fork_t *left_fork;
+    fork_t *right_fork;
+    struct timeval current_time;
+    int status;
+    struct timeval expected_to_die;
 } philo_t;
-
 
 int	ft_atoi(const char *nptr);
 

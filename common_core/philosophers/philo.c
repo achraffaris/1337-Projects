@@ -6,7 +6,7 @@
 /*   By: gitpod <gitpod@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:45:50 by gitpod            #+#    #+#             */
-/*   Updated: 2022/06/07 19:05:56 by gitpod           ###   ########.fr       */
+/*   Updated: 2022/06/09 19:07:18 by gitpod           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,21 @@
 
 // ./philo 7 800 200 200 5
 
-pthread_mutex_t *create_forks(int philos)
+fork_t *create_forks(int philos)
 {
     int i;
 
     i = 0;
-    pthread_mutex_t *pth_mtx;
-    pth_mtx = malloc(sizeof(pthread_mutex_t) * philos);
+    fork_t *forks;
+    forks = malloc(sizeof(fork_t) * philos);
     while (i < philos)
     {
-        pthread_mutex_init(&pth_mtx[i], NULL);
+        pthread_mutex_init(&forks[i].mutex_fork, NULL);
+        forks[i].status = 1;
+        forks[i].id = i;
         i++;
     }
-    return pth_mtx;
+    return forks;
 }
 
 void    simulation_init(simulation_t *s, char **av)
@@ -40,22 +42,49 @@ void    simulation_init(simulation_t *s, char **av)
     if (av[5])
         s->n_eat = ft_atoi(av[5]);
     s->forks = create_forks(s->n_philos);
+    pthread_mutex_init(&s->mutex_print, NULL);
+    s->all_alive = TRUE;
 }
 
+void is_alive(philo_t *ph)
+{
+    struct timeval current_time;
+    gettimeofday(&current_time, NULL);
+    if (current_time.tv_usec > ph->expected_to_die.tv_usec)
+    {
+        printf("%d died\n", ph->id);
+        ph->s->all_alive = FALSE;
+    }
+}
 void    *simulation(void *philos)
 {
     philo_t *ph = (philo_t *)philos;
-    while (1337)
+    gettimeofday(&ph->current_time, NULL);
+    ph->expected_to_die.tv_usec = ph->current_time.tv_usec + (ph->s->die_time * MICROSECOND);
+    while (1337 && ph->s->all_alive)
     {
-        printf("sim\n");
-        pthread_mutex_lock(ph->left_fork);
-        printf("Philo no.%d has taken the left fork\n", ph->id);
-        pthread_mutex_lock(ph->right_fork);
-        printf("Philo no.%d has taken the right fork\n", ph->id);
-        printf("Philo no.%d is eating ...\n", ph->id);
-        sleep(5);
-        pthread_mutex_unlock(ph->left_fork);
-        pthread_mutex_unlock(ph->right_fork);
+        is_alive(ph);
+        if (ph->left_fork->status == AVAILABLE && ph->right_fork->status == AVAILABLE)
+        {
+            pthread_mutex_lock(&ph->left_fork->mutex_fork);
+            ph->left_fork->status = UNAVAILABLE;
+            printf("%d has taken a fork\n", ph->id);
+            pthread_mutex_lock(&ph->right_fork->mutex_fork);
+            ph->right_fork->status = UNAVAILABLE;
+            printf("%d has taken a fork\n", ph->id);
+            ph->status = IS_EATING;
+            gettimeofday(&ph->current_time, NULL);
+            ph->expected_to_die.tv_usec = ph->current_time.tv_usec + (ph->s->die_time * MICROSECOND);
+            printf("%d is eating\n", ph->id);
+            usleep(ph->s->eat_time * MICROSECOND);
+            ph->left_fork->status = AVAILABLE;
+            ph->right_fork->status = AVAILABLE;
+            pthread_mutex_unlock(&ph->left_fork->mutex_fork);
+            pthread_mutex_unlock(&ph->right_fork->mutex_fork);
+            printf("%d is sleeping\n", ph->id);
+            usleep(ph->s->sleep_time  * MICROSECOND);
+            printf("%d is thinking ...\n", ph->id);
+        }
     }
     return (0);
 }
@@ -73,7 +102,7 @@ philo_t    *philos_init(simulation_t *s)
         ph[i].s = s;
         ph[i].left_fork = &s->forks[i];
         if (i == s->n_philos - 1)
-            ph[i].right_fork = &s->forks[0];
+            ph[i].right_fork = ph[0].left_fork;
         else
             ph[i].right_fork = &s->forks[i + 1];
         pthread_create(&ph[i].th_id, NULL, &simulation, &ph[i]);
@@ -103,4 +132,7 @@ int main(int ac, char **av)
     simulation_init(&s, av);
     ph = philos_init(&s);
     wait_threads(ph);
+    
+    
+    
 }
