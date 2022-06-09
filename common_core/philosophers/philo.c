@@ -6,7 +6,7 @@
 /*   By: gitpod <gitpod@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:45:50 by gitpod            #+#    #+#             */
-/*   Updated: 2022/06/09 19:38:05 by gitpod           ###   ########.fr       */
+/*   Updated: 2022/06/09 20:36:57 by gitpod           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,14 @@ fork_t *create_forks(int philos)
 
 void    print_record(char *record, philo_t *ph)
 {
+    struct timeval current_time;
+    int now_ms;
+    int last_ms;
+    gettimeofday(&current_time, NULL);
+    last_ms = (ph->sim_time.tv_sec * MICROSECOND) + (ph->sim_time.tv_usec / MICROSECOND);
+    now_ms = (current_time.tv_sec * MICROSECOND) + (current_time.tv_usec / MICROSECOND);
     pthread_mutex_lock(&ph->s->mutex_print);
-    printf("%d %s\n", ph->id, record);
+    printf("%dms %d %s\n", now_ms-last_ms ,ph->id, record);
     pthread_mutex_unlock(&ph->s->mutex_print);
 }
 
@@ -53,22 +59,26 @@ void    simulation_init(simulation_t *s, char **av)
     s->all_alive = TRUE;
 }
 
-void is_alive(philo_t *ph)
+int is_alive(philo_t *ph)
 {
     struct timeval current_time;
     gettimeofday(&current_time, NULL);
-    if (current_time.tv_usec > ph->expected_to_die.tv_usec)
+    int now;
+    now = (current_time.tv_sec * MICROSECOND) + (current_time.tv_usec / MICROSECOND);
+    if (now > ph->expected_to_die)
     {
-        ph->s->all_alive = FALSE;
         print_record("died", ph);
+        return 0;
     }
+    return 1;
 }
 void    *simulation(void *philos)
 {
     philo_t *ph = (philo_t *)philos;
     gettimeofday(&ph->current_time, NULL);
-    ph->expected_to_die.tv_usec = ph->current_time.tv_usec + (ph->s->die_time * MICROSECOND);
-    while (1337 && ph->s->all_alive)
+    gettimeofday(&ph->sim_time, NULL);
+    ph->expected_to_die = (ph->current_time.tv_sec * MICROSECOND) + (ph->current_time.tv_usec / MICROSECOND) + ph->s->die_time;
+    while (1337)
     {
         is_alive(ph);
         if (ph->left_fork->status == AVAILABLE && ph->right_fork->status == AVAILABLE)
@@ -81,13 +91,13 @@ void    *simulation(void *philos)
             print_record("has taken a fork", ph);
             ph->status = IS_EATING;
             gettimeofday(&ph->current_time, NULL);
-            ph->expected_to_die.tv_usec = ph->current_time.tv_usec + (ph->s->die_time * MICROSECOND);
+            ph->expected_to_die = (ph->current_time.tv_sec * MICROSECOND) + (ph->current_time.tv_usec / MICROSECOND) + ph->s->die_time;
             print_record("is eating", ph);
             usleep(ph->s->eat_time * MICROSECOND);
-            ph->left_fork->status = AVAILABLE;
-            ph->right_fork->status = AVAILABLE;
             pthread_mutex_unlock(&ph->left_fork->mutex_fork);
             pthread_mutex_unlock(&ph->right_fork->mutex_fork);
+            ph->left_fork->status = AVAILABLE;
+            ph->right_fork->status = AVAILABLE;
             print_record("is sleeping", ph);
             usleep(ph->s->sleep_time  * MICROSECOND);
             print_record("is thinking", ph);

@@ -6,7 +6,7 @@
 /*   By: gitpod <gitpod@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 10:09:28 by afaris            #+#    #+#             */
-/*   Updated: 2022/06/09 19:25:57 by gitpod           ###   ########.fr       */
+/*   Updated: 2022/06/09 20:14:31 by gitpod           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,10 @@ typedef struct philo
     fork_t *left_fork;
     fork_t *right_fork;
     struct timeval current_time;
+    struct timeval sim_time;
     int status;
-    struct timeval expected_to_die;
+    struct timeval tmp;
+    int expected_to_die;
 } philo_t;
 
 int	ft_atoi(const char *nptr);
