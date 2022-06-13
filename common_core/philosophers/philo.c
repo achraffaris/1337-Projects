@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:45:50 by gitpod            #+#    #+#             */
-/*   Updated: 2022/06/13 13:16:11 by afaris           ###   ########.fr       */
+/*   Updated: 2022/06/13 16:01:14 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,40 +66,32 @@ void    simulation_init(simulation_t *s, char **av)
     pthread_mutex_init(&s->mutex_check2, NULL);
     s->all_alive = TRUE;
 }
-void    end_of_simulation(philo_t *ph)
-{
-    int i;
-
-    i = 0;
-    while (i < ph->s->n_philos)
-    {
-        pthread_detach(ph[i].th_id);
-        i++;
-    }
-}
 
 int is_alive(philo_t *ph)
 {
     int now_ms;
     
     now_ms = current_time_ms();
-    if (now_ms >= ph->future_die_ms)
+    pthread_mutex_lock(&ph->s->mutex_check);
+    if (now_ms >= ph->eated_at + ph->s->die_time)
     {
         ph->s->all_alive = FALSE;
         print_record("died", ph);
-        exit(0);
+        pthread_mutex_lock(&ph->s->mutex_print);
+        return (0);
     }
+    pthread_mutex_unlock(&ph->s->mutex_check);
     return 1;
 }
 
-
-
 void    is_eating(philo_t *ph)
 {
-    ph->future_die_ms = current_time_ms() + ph->s->die_time;
+    ph->eated_at = current_time_ms();
     print_record("is eating", ph);
     usleep(ph->s->eat_time * MICROSECOND);
     ph->n_eat += 1;
+    if (ph->n_eat >= ph->s->n_eat)
+        ph->completed = TRUE;
     pthread_mutex_unlock(&ph->left_fork->mutex_fork);
     pthread_mutex_unlock(&ph->right_fork->mutex_fork);
 }
@@ -111,19 +103,17 @@ int    all_alive(simulation_t *s)
         return (0);
     pthread_mutex_unlock(&s->mutex_check2);
     return (1);
-    
-}
+}  
+
 void    *simulation(void *philos)
 {
     philo_t *ph = (philo_t *)philos;
-    
+    ph->eated_at = current_time_ms();
     ph->sim_start_ms = current_time_ms();
-    ph->future_die_ms = ph->sim_start_ms + ph->s->die_time;
-    while (all_alive(ph->s))
+    while (1337)
     {
-        is_alive(ph);
         if ((ph->id + 1) % 2 == 0)
-            usleep(150);
+            usleep(50);
         pthread_mutex_lock(&ph->left_fork->mutex_fork);
         print_record("has taken a fork", ph);
         pthread_mutex_lock(&ph->right_fork->mutex_fork);
@@ -136,7 +126,28 @@ void    *simulation(void *philos)
     return (0);
 }
 
-philo_t    *philos_init(simulation_t *s)
+int all_full(simulation_t *s)
+{
+    int i;
+
+    i = 0;
+    int k;
+
+    k = 1;
+    philo_t *ph = (philo_t *)s->ph;
+    while(i < s->n_philos)
+    {
+        if (ph[i].completed)
+            k++;
+        i++;
+    }
+    if (k == s->n_eat)
+        return (1);
+    return (0);
+    
+}
+
+int    philos_init(simulation_t *s)
 {
     int i;
     philo_t *ph;
@@ -156,28 +167,28 @@ philo_t    *philos_init(simulation_t *s)
         pthread_create(&ph[i].th_id, NULL, &simulation, &ph[i]);
         i++;
     }
-    return (ph);
-}
-
-void    wait_threads(philo_t *ph)
-{
-    int i;
-
+    s->ph = ph;
     i = 0;
-    while (i < ph->s->n_philos)
+    while (1337)
     {
-        pthread_join(ph[i].th_id, NULL);
+        usleep(50);
+        if (!is_alive(&ph[i]) || all_full(s))
+            return (0);
         i++;
+        if (i == s->n_philos)
+            i = 0;
     }
+    return (1);
 }
+
 int main(int ac, char **av)
 {
     simulation_t s;
-    philo_t *ph;
 
     if (ac == 7)
         return (0);
     simulation_init(&s, av);
-    ph = philos_init(&s);
-    wait_threads(ph);
+    if (!philos_init(&s))
+        return (0);
+    return(0);
 }

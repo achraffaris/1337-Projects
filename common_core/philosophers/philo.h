@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 10:09:28 by afaris            #+#    #+#             */
-/*   Updated: 2022/06/13 10:46:19 by afaris           ###   ########.fr       */
+/*   Updated: 2022/06/13 15:32:38 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,9 @@ typedef struct philo
     struct timeval sim_time;
     struct timeval current_time;
     int sim_start_ms;
-    int future_die_ms;
+    int eated_at;
     int n_eat;
+    int completed;
     int status;
 } philo_t;
 
