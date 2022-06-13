@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:45:50 by gitpod            #+#    #+#             */
-/*   Updated: 2022/06/13 16:01:14 by afaris           ###   ########.fr       */
+/*   Updated: 2022/06/13 17:28:29 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,11 @@ void    is_eating(philo_t *ph)
     ph->eated_at = current_time_ms();
     print_record("is eating", ph);
     usleep(ph->s->eat_time * MICROSECOND);
+    pthread_mutex_lock(&ph->s->mutex_check2);
     ph->n_eat += 1;
     if (ph->n_eat >= ph->s->n_eat)
         ph->completed = TRUE;
+    pthread_mutex_unlock(&ph->s->mutex_check2);
     pthread_mutex_unlock(&ph->left_fork->mutex_fork);
     pthread_mutex_unlock(&ph->right_fork->mutex_fork);
 }
