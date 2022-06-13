@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gitpod <gitpod@student.42.fr>              +#+  +:+       +#+        */
+/*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:45:50 by gitpod            #+#    #+#             */
-/*   Updated: 2022/06/09 20:36:57 by gitpod           ###   ########.fr       */
+/*   Updated: 2022/06/13 13:16:11 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,22 @@ fork_t *create_forks(int philos)
     return forks;
 }
 
+int current_time_ms()
+{
+    int now_ms;
+    struct timeval now;
+    
+    now_ms = 0;
+    gettimeofday(&now, NULL);
+    now_ms = (now.tv_sec * MICROSECOND) + (now.tv_usec / MICROSECOND);
+    return (now_ms);
+}
 void    print_record(char *record, philo_t *ph)
 {
-    struct timeval current_time;
-    int now_ms;
-    int last_ms;
-    gettimeofday(&current_time, NULL);
-    last_ms = (ph->sim_time.tv_sec * MICROSECOND) + (ph->sim_time.tv_usec / MICROSECOND);
-    now_ms = (current_time.tv_sec * MICROSECOND) + (current_time.tv_usec / MICROSECOND);
+    int start_ms;
     pthread_mutex_lock(&ph->s->mutex_print);
-    printf("%dms %d %s\n", now_ms-last_ms ,ph->id, record);
+    start_ms = ph->sim_start_ms;
+    printf("%dms %d %s\n", current_time_ms()-start_ms ,ph->id, record);
     pthread_mutex_unlock(&ph->s->mutex_print);
 }
 
@@ -56,52 +62,76 @@ void    simulation_init(simulation_t *s, char **av)
         s->n_eat = ft_atoi(av[5]);
     s->forks = create_forks(s->n_philos);
     pthread_mutex_init(&s->mutex_print, NULL);
+    pthread_mutex_init(&s->mutex_check, NULL);
+    pthread_mutex_init(&s->mutex_check2, NULL);
     s->all_alive = TRUE;
+}
+void    end_of_simulation(philo_t *ph)
+{
+    int i;
+
+    i = 0;
+    while (i < ph->s->n_philos)
+    {
+        pthread_detach(ph[i].th_id);
+        i++;
+    }
 }
 
 int is_alive(philo_t *ph)
 {
-    struct timeval current_time;
-    gettimeofday(&current_time, NULL);
-    int now;
-    now = (current_time.tv_sec * MICROSECOND) + (current_time.tv_usec / MICROSECOND);
-    if (now > ph->expected_to_die)
+    int now_ms;
+    
+    now_ms = current_time_ms();
+    if (now_ms >= ph->future_die_ms)
     {
+        ph->s->all_alive = FALSE;
         print_record("died", ph);
-        return 0;
+        exit(0);
     }
     return 1;
+}
+
+
+
+void    is_eating(philo_t *ph)
+{
+    ph->future_die_ms = current_time_ms() + ph->s->die_time;
+    print_record("is eating", ph);
+    usleep(ph->s->eat_time * MICROSECOND);
+    ph->n_eat += 1;
+    pthread_mutex_unlock(&ph->left_fork->mutex_fork);
+    pthread_mutex_unlock(&ph->right_fork->mutex_fork);
+}
+
+int    all_alive(simulation_t *s)
+{
+    pthread_mutex_lock(&s->mutex_check2);
+    if (!s->all_alive)
+        return (0);
+    pthread_mutex_unlock(&s->mutex_check2);
+    return (1);
+    
 }
 void    *simulation(void *philos)
 {
     philo_t *ph = (philo_t *)philos;
-    gettimeofday(&ph->current_time, NULL);
-    gettimeofday(&ph->sim_time, NULL);
-    ph->expected_to_die = (ph->current_time.tv_sec * MICROSECOND) + (ph->current_time.tv_usec / MICROSECOND) + ph->s->die_time;
-    while (1337)
+    
+    ph->sim_start_ms = current_time_ms();
+    ph->future_die_ms = ph->sim_start_ms + ph->s->die_time;
+    while (all_alive(ph->s))
     {
         is_alive(ph);
-        if (ph->left_fork->status == AVAILABLE && ph->right_fork->status == AVAILABLE)
-        {
-            pthread_mutex_lock(&ph->left_fork->mutex_fork);
-            ph->left_fork->status = UNAVAILABLE;
-            print_record("has taken a fork", ph);
-            pthread_mutex_lock(&ph->right_fork->mutex_fork);
-            ph->right_fork->status = UNAVAILABLE;
-            print_record("has taken a fork", ph);
-            ph->status = IS_EATING;
-            gettimeofday(&ph->current_time, NULL);
-            ph->expected_to_die = (ph->current_time.tv_sec * MICROSECOND) + (ph->current_time.tv_usec / MICROSECOND) + ph->s->die_time;
-            print_record("is eating", ph);
-            usleep(ph->s->eat_time * MICROSECOND);
-            pthread_mutex_unlock(&ph->left_fork->mutex_fork);
-            pthread_mutex_unlock(&ph->right_fork->mutex_fork);
-            ph->left_fork->status = AVAILABLE;
-            ph->right_fork->status = AVAILABLE;
-            print_record("is sleeping", ph);
-            usleep(ph->s->sleep_time  * MICROSECOND);
-            print_record("is thinking", ph);
-        }
+        if ((ph->id + 1) % 2 == 0)
+            usleep(150);
+        pthread_mutex_lock(&ph->left_fork->mutex_fork);
+        print_record("has taken a fork", ph);
+        pthread_mutex_lock(&ph->right_fork->mutex_fork);
+        print_record("has taken a fork", ph);
+        is_eating(ph);
+        print_record("is sleeping", ph);
+        usleep(ph->s->sleep_time  * MICROSECOND);
+        print_record("is thinking", ph);
     }
     return (0);
 }
@@ -117,6 +147,7 @@ philo_t    *philos_init(simulation_t *s)
     {
         ph[i].id = i;
         ph[i].s = s;
+        ph[i].n_eat = 0;
         ph[i].left_fork = &s->forks[i];
         if (i == s->n_philos - 1)
             ph[i].right_fork = ph[0].left_fork;
@@ -149,7 +180,4 @@ int main(int ac, char **av)
     simulation_init(&s, av);
     ph = philos_init(&s);
     wait_threads(ph);
-    
-    
-    
 }
