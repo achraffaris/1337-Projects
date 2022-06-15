@@ -7,6 +7,8 @@ AR = ar rc
 
 SRCS = 	philo.c \
 		utils/ft_atoi.c \
+		utils/simulation.c \
+		utils/actions.c
 		
 BSRCS = 
 		

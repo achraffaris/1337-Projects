@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 10:09:28 by afaris            #+#    #+#             */
-/*   Updated: 2022/06/13 15:32:38 by afaris           ###   ########.fr       */
+/*   Updated: 2022/06/15 09:03:10 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,9 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-
-#define AVAILABLE 1
-#define UNAVAILABLE 0
 #define TRUE 1
 #define FALSE 0
 #define MICROSECOND 1000
-#define ALIVE 1
 
 typedef struct fork
 {
@@ -46,9 +42,10 @@ typedef struct simulation
     pthread_mutex_t mutex_print;
     pthread_mutex_t mutex_check;
     pthread_mutex_t mutex_check2;
+    pthread_mutex_t mutex_check3;
+    pthread_mutex_t mutex_check4;
     int all_alive;
-    void *ph;
-    pthread_t tmp;
+    int n_philos_eated;
 } simulation_t;
 
 typedef struct philo
@@ -59,7 +56,6 @@ typedef struct philo
     fork_t *left_fork;
     fork_t *right_fork;
     struct timeval sim_time;
-    struct timeval current_time;
     int sim_start_ms;
     int eated_at;
     int n_eat;
@@ -68,6 +64,16 @@ typedef struct philo
 } philo_t;
 
 
-int	ft_atoi(const char *nptr);
+int     ft_atoi(const char *nptr);
+void    simulation_init(simulation_t *s, char **av);
+void    simulation_init(simulation_t *s, char **av);
+void    *simulation(void *philos);
+void    simulation_check(philo_t *ph);
+int     simulation_start(simulation_t *s);
+fork_t  *create_forks(int philos);
+int     current_time_ms();
+void    print_record(char *record, philo_t *ph);
+int     is_alive(philo_t *ph);
+void    is_eating(philo_t *ph);
 
 #endif
