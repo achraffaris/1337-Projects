@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 10:09:28 by afaris            #+#    #+#             */
-/*   Updated: 2022/06/15 09:03:10 by afaris           ###   ########.fr       */
+/*   Updated: 2022/06/16 09:13:31 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,9 @@ typedef struct simulation
     int die_time;
     int n_eat;
     fork_t *forks;
-    pthread_mutex_t mutex_print;
-    pthread_mutex_t mutex_check;
-    pthread_mutex_t mutex_check2;
-    pthread_mutex_t mutex_check3;
-    pthread_mutex_t mutex_check4;
+    pthread_mutex_t mtx_print;
+    pthread_mutex_t mtx_check_death;
+    pthread_mutex_t mtx_check_optional;
     int all_alive;
     int n_philos_eated;
 } simulation_t;
@@ -68,7 +66,7 @@ int     ft_atoi(const char *nptr);
 void    simulation_init(simulation_t *s, char **av);
 void    simulation_init(simulation_t *s, char **av);
 void    *simulation(void *philos);
-void    simulation_check(philo_t *ph);
+int    simulation_check(philo_t *ph);
 int     simulation_start(simulation_t *s);
 fork_t  *create_forks(int philos);
 int     current_time_ms();

@@ -11,13 +11,10 @@ void    simulation_init(simulation_t *s, char **av)
         s->n_eat = ft_atoi(av[5]);
     s->forks = create_forks(s->n_philos);
     s->n_philos_eated = 0;
-    pthread_mutex_init(&s->mutex_print, NULL);
-    pthread_mutex_init(&s->mutex_check, NULL);
-    pthread_mutex_init(&s->mutex_check2, NULL);
-    pthread_mutex_init(&s->mutex_check3, NULL);
-    s->all_alive = TRUE;
+    pthread_mutex_init(&s->mtx_check_death, NULL);
+    pthread_mutex_init(&s->mtx_check_optional, NULL);
+    pthread_mutex_init(&s->mtx_print, NULL);
 }
-
 void    *simulation(void *philos)
 {
     philo_t *ph = (philo_t *)philos;
@@ -25,8 +22,8 @@ void    *simulation(void *philos)
     ph->sim_start_ms = current_time_ms();
     while (1337)
     {
-        if ((ph->id + 1) % 2 == 0)
-            usleep(50);
+        if ((ph->id) % 2 == 0)
+            usleep(100);
         pthread_mutex_lock(&ph->left_fork->mutex_fork);
         print_record("has taken a fork", ph);
         pthread_mutex_lock(&ph->right_fork->mutex_fork);
@@ -39,26 +36,25 @@ void    *simulation(void *philos)
     return (0);
 }
 
-void    simulation_check(philo_t *ph)
+int     simulation_check(philo_t *ph)
 {
     int i;
-    int up;
 
     i = 0;
-    up = TRUE;
-    while (up)
+    while (TRUE)
     {
-        usleep(50);
+        usleep(100);
         if (!is_alive(&ph[i]))
-            up = FALSE;
-        pthread_mutex_lock(&ph->s->mutex_check3);
+            return (TRUE);
+        pthread_mutex_lock(&ph->s->mtx_check_optional);
         if (ph->s->n_philos_eated == ph->s->n_philos)
-            up = FALSE;
-        pthread_mutex_unlock(&ph->s->mutex_check3);
+            return (TRUE);
+        pthread_mutex_unlock(&ph->s->mtx_check_optional);
         i++;
         if (i == ph->s->n_philos)
             i = 0;
     }
+    return (TRUE);
 }
 
 int    simulation_start(simulation_t *s)
@@ -70,7 +66,7 @@ int    simulation_start(simulation_t *s)
     i = 0;
     while (i < s->n_philos)
     {
-        ph[i].id = i;
+        ph[i].id = i + 1;
         ph[i].s = s;
         ph[i].n_eat = 0;
         ph[i].completed = FALSE;
@@ -82,6 +78,5 @@ int    simulation_start(simulation_t *s)
         pthread_create(&ph[i].th_id, NULL, &simulation, &ph[i]);
         i++;
     }
-    simulation_check(ph);
-    return (1);
+    return (simulation_check(ph));
 }
