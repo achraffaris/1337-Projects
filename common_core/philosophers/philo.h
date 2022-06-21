@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/04 10:09:28 by afaris            #+#    #+#             */
-/*   Updated: 2022/06/16 09:13:31 by afaris           ###   ########.fr       */
+/*   Updated: 2022/06/20 13:54:01 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct philo
     struct timeval sim_time;
     int sim_start_ms;
     int eated_at;
+    pthread_mutex_t mtx_check_death;
     int n_eat;
     int completed;
     int status;
@@ -64,9 +65,8 @@ typedef struct philo
 
 int     ft_atoi(const char *nptr);
 void    simulation_init(simulation_t *s, char **av);
-void    simulation_init(simulation_t *s, char **av);
 void    *simulation(void *philos);
-int    simulation_check(philo_t *ph);
+int     simulation_check(philo_t *ph);
 int     simulation_start(simulation_t *s);
 fork_t  *create_forks(int philos);
 int     current_time_ms();

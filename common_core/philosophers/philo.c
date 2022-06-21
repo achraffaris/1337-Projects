@@ -4,8 +4,9 @@ int main(int ac, char **av)
 {
     simulation_t s;
 
-    if (ac == 7)
+    if (ac > 6)
         return (0);
     simulation_init(&s, av);
-    return (simulation_start(&s));
+    int i = simulation_start(&s);
+    return (i);
 }

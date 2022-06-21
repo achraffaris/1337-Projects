@@ -15,10 +15,13 @@ void    simulation_init(simulation_t *s, char **av)
     pthread_mutex_init(&s->mtx_check_optional, NULL);
     pthread_mutex_init(&s->mtx_print, NULL);
 }
+
 void    *simulation(void *philos)
 {
     philo_t *ph = (philo_t *)philos;
+    pthread_mutex_lock(&ph->mtx_check_death);
     ph->eated_at = current_time_ms();
+    pthread_mutex_unlock(&ph->mtx_check_death);
     ph->sim_start_ms = current_time_ms();
     while (1337)
     {
@@ -36,7 +39,7 @@ void    *simulation(void *philos)
     return (0);
 }
 
-int     simulation_check(philo_t *ph)
+int    simulation_check(philo_t *ph)
 {
     int i;
 
@@ -57,6 +60,14 @@ int     simulation_check(philo_t *ph)
     return (TRUE);
 }
 
+int simulation_end(simulation_t *s, philo_t *ph)
+{
+    simulation_check(ph);
+    free(ph);
+    free(s->forks);
+    return (TRUE);
+}
+
 int    simulation_start(simulation_t *s)
 {
     int i;
@@ -69,14 +80,14 @@ int    simulation_start(simulation_t *s)
         ph[i].id = i + 1;
         ph[i].s = s;
         ph[i].n_eat = 0;
-        ph[i].completed = FALSE;
         ph[i].left_fork = &s->forks[i];
         if (i == s->n_philos - 1)
             ph[i].right_fork = ph[0].left_fork;
         else
             ph[i].right_fork = &s->forks[i + 1];
+        pthread_mutex_init(&ph[i].mtx_check_death, NULL);
         pthread_create(&ph[i].th_id, NULL, &simulation, &ph[i]);
         i++;
     }
-    return (simulation_check(ph));
+    return (simulation_end(s, ph));
 }

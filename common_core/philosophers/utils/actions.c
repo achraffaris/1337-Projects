@@ -38,32 +38,34 @@ void    print_record(char *record, philo_t *ph)
 
 int     is_alive(philo_t *ph)
 {
-    pthread_mutex_lock(&ph->s->mtx_check_death);
+    pthread_mutex_lock(&ph->mtx_check_death);
     if (current_time_ms() >= (ph->eated_at + ph->s->die_time))
     {
         print_record("died", ph);
         pthread_mutex_lock(&ph->s->mtx_print);
         return (0);
     }
-    pthread_mutex_unlock(&ph->s->mtx_check_death);
+    pthread_mutex_unlock(&ph->mtx_check_death);
     return (1);
 }
 
 void    is_eating(philo_t *ph)
 {
     print_record("is eating", ph);
-    pthread_mutex_lock(&ph->s->mtx_check_death);
+    pthread_mutex_lock(&ph->mtx_check_death);
     ph->eated_at = current_time_ms();
-    pthread_mutex_unlock(&ph->s->mtx_check_death);
+    pthread_mutex_unlock(&ph->mtx_check_death);
     usleep(ph->s->eat_time * MICROSECOND);
     if (ph->s->n_eat)
-        ph->n_eat += 1;
-    if (ph->s->n_eat && ph->n_eat >= ph->s->n_eat && !ph->completed)
     {
-        ph->completed = TRUE;
-        pthread_mutex_lock(&ph->s->mtx_check_optional);
-        ph->s->n_philos_eated++;
-        pthread_mutex_unlock(&ph->s->mtx_check_optional);
+        ph->n_eat++;
+        if (ph->n_eat >= ph->s->n_eat && !ph->completed)
+        {
+            ph->completed = TRUE;
+            pthread_mutex_lock(&ph->s->mtx_check_optional);
+            ph->s->n_philos_eated++;
+            pthread_mutex_unlock(&ph->s->mtx_check_optional);
+        }
     }
     pthread_mutex_unlock(&ph->left_fork->mutex_fork);
     pthread_mutex_unlock(&ph->right_fork->mutex_fork);
