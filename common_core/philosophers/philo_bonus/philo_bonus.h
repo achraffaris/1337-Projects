@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:46:36 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/01 15:51:21 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/01 18:32:27 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct simulation
     int     n_meals;
     fork_t  *forks;
     sem_t   *s_print;
-} simulation_t;
+}   simulation_t;
 
 typedef struct philo
 {
@@ -56,12 +56,16 @@ typedef struct philo
     fork_t          right_fork;
     sem_t           *death_check;
     simulation_t    *sim;
-} philo_t;
+}   philo_t;
 
-int     ft_atoi(const char *nptr);
-char	*ft_strjoin(char *s1, char *s2);
-char	*ft_itoa(int n);
-
+int                 ft_atoi(const char *nptr);
+char                *ft_strjoin(char *s1, char *s2);
+char                *ft_itoa(int n);
+int                 current_time();
+fork_t              *new_forks(int n);
+void                print_record(char *record, philo_t *ph);
+void                eating(philo_t *ph);
+void                *checking(void *philos);
 
 #endif
 

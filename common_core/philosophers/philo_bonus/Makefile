@@ -6,7 +6,6 @@ AR = ar rc
 
 SRCS = 	philo_bonus.c \
 		utils/ft_atoi.c \
-		utils/simulation.c \
 		utils/actions.c \
 		utils/ft_strjoin.c \
 		utils/ft_itoa.c 
