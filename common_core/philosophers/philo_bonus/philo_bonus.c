@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 15:20:07 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/01 17:05:19 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/01 18:28:30 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,20 @@
 
 // ./philo 5 800 200 200 7
 
-void    simulation_end(simulation_t *s, int mode)
+void    simulation_end(simulation_t *s, philo_t *ph)
 {
     int i;
 
     i = 0;
-    if (!s)
-        exit(mode);
-    else
-        sem_wait(s->s_print);
+    waitpid(0, 0, 0);
+    sem_wait(s->s_print);
     while (i < s->n_philos)
     {
-        sem_close(s->forks->s_fork);
+        sem_close(s->forks[i].s_fork);
+        kill(ph[i].pid, SIGTERM);
         i++;
     }
-    exit(mode);
+    exit(EXIT_SUCCESS);
 }
 
 int current_time()
@@ -50,7 +49,7 @@ fork_t  *new_forks(int n)
     i = 0;
     forks = malloc(sizeof(fork_t) * n);
     if (!forks)
-        simulation_end(0, EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     while (i < n)
     {
         forks[i].id = i + 1;
@@ -90,7 +89,7 @@ void    *checking(void *philos)
         if (ph->eated_at && (current_time() >= ph->eated_at + ph->sim->time_die))
         {
             print_record("died", ph);
-            simulation_end(ph->sim, EXIT_SUCCESS);
+            exit(EXIT_SUCCESS);
         }
         sem_post(ph->death_check);
     }
@@ -130,13 +129,6 @@ void    simulation(philo_t *ph)
     }
 }
 
-void death_signal(simulation_t s)
-{
-    waitpid(0, 0, 0);
-    kill(0, SIGKILL);
-    simulation_end(&s, EXIT_SUCCESS);
-}
-
 void    simulation_start(simulation_t s)
 {
     int i;
@@ -145,7 +137,7 @@ void    simulation_start(simulation_t s)
     i = 0;
     ph = malloc(sizeof(philo_t) * s.n_philos);
     if (!ph)
-        simulation_end(&s, EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     while (i < s.n_philos)
     {
         ph[i].id = i + 1;
@@ -165,7 +157,7 @@ void    simulation_start(simulation_t s)
         else
             i++;
     }
-    death_signal(s);
+    simulation_end(&s, ph);
 }
 
 int main(int ac, char **av)
