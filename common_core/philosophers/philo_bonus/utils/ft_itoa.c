@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
+/*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/14 12:27:33 by afaris            #+#    #+#             */
-/*   Updated: 2021/11/16 17:27:56 by afaris           ###   ########.fr       */
+/*   Updated: 2022/06/29 17:33:00 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../philo_bonus.h"
 
 static int	len_count(int n)
 {

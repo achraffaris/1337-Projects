@@ -6,11 +6,24 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 20:30:44 by afaris            #+#    #+#             */
-/*   Updated: 2022/06/27 15:34:11 by afaris           ###   ########.fr       */
+/*   Updated: 2022/06/29 17:31:53 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../philo_bonus.h"
+
+
+int	ft_strlen(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		i++;
+	}
+	return (i);
+}
 
 char	*ft_strjoin(char *s1, char *s2)
 {
