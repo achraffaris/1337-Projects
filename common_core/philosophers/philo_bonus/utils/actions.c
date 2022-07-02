@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 18:30:58 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/02 08:46:57 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/02 16:57:47 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,12 @@ void    *checking(void *philos)
         if (ph->eated_at && (current_time() >= ph->eated_at + ph->sim->time_die))
         {
             print_record("died", ph);
-            exit(EXIT_SUCCESS);
+            kill(ph->pid, SIGTERM);
+        }
+        else if (!ph->full && ph->sim->n_meals && ph->n_meals >= ph->sim->n_meals)
+        {
+            ph->full = TRUE;
+            kill(ph->pid, SIGINT);
         }
         sem_post(ph->sim->check_death);
     }

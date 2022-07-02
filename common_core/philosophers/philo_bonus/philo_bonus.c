@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 15:20:07 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/02 08:48:29 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/02 16:58:01 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,16 @@ void    simulation_end(simulation_t *s, philo_t *ph)
     int i;
 
     i = 0;
-    waitpid(0, 0, 0);
+    int status;
+    while (waitpid(0, &status, 0) >= 0)
+    {
+        printf("signal received = %d", status);
+        if (status != SIGINT || (i == s->n_meals && s->n_meals))
+            break ;
+        else if (status == SIGINT)
+            i++;
+    }
+    i = 0;
     sem_wait(s->s_print);
     while (i < s->n_philos)
     {
