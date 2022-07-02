@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 15:20:07 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/01 18:36:23 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/02 08:48:29 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,15 @@ void    simulation_init(simulation_t *s, char **av)
     s->time_die = ft_atoi(av[2]);
     s->time_eat = ft_atoi(av[3]);
     s->time_sleep = ft_atoi(av[4]);
+    sem_unlink("check_death");
+    s->check_death = sem_open("check_death", O_CREAT | O_RDWR, 0777, 1);
     s->n_meals = 0;
-    sem_unlink("s_print");
-    s->s_print = sem_open("s_print", O_CREAT | O_RDWR, 0777, 1);
     if (av[5])
         s->n_meals = ft_atoi(av[5]);
+    sem_unlink("s_print");
+    s->s_print = sem_open("s_print", O_CREAT | O_RDWR, 0777, 1);
     s->forks = new_forks(s->n_philos);
+    s->n = 0;
 }
 
 void    simulation_end(simulation_t *s, philo_t *ph)
@@ -77,7 +80,9 @@ void    simulation_start(simulation_t s)
         ph[i].sim = &s;
         ph[i].eated_at = 0;
         ph[i].left_fork = s.forks[i];
+        ph[i].full = FALSE;
         sem_unlink("death_check");
+
         ph[i].death_check = sem_open("death_check", O_CREAT | O_RDWR, 0777, 1);
         if (i == s.n_philos - 1)
             ph[i].right_fork = s.forks[0];

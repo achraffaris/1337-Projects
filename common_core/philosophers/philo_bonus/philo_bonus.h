@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:46:36 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/01 18:32:27 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/02 08:43:34 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,37 +35,41 @@ typedef struct fork
 
 typedef struct simulation
 {
-    int     n_philos;
-    int     time_die;
-    int     time_eat;
-    int     time_sleep;
-    int     n_meals;
-    fork_t  *forks;
-    sem_t   *s_print;
+    int                 n_philos;
+    int                 time_die;
+    int                 time_eat;
+    int                 time_sleep;
+    int                 n_meals;
+    fork_t              *forks;
+    sem_t               *s_print;
+    sem_t               *check_death;
+    int                 n;
 }   simulation_t;
 
 typedef struct philo
 {
-    int             id;
-    pthread_t       thid;
-    pid_t           pid;
-    int             n_meals;
-    int             eated_at;
-    int             started_at;
-    fork_t          left_fork;
-    fork_t          right_fork;
-    sem_t           *death_check;
-    simulation_t    *sim;
+    int                 id;
+    pthread_t           thid;
+    pid_t               pid;
+    int                 n_meals;
+    int                 eated_at;
+    int                 started_at;
+    int                 full;
+    fork_t              left_fork;
+    fork_t              right_fork;
+    sem_t               *death_check;
+    sem_t               *meals_check;
+    simulation_t        *sim;
 }   philo_t;
 
-int                 ft_atoi(const char *nptr);
-char                *ft_strjoin(char *s1, char *s2);
-char                *ft_itoa(int n);
-int                 current_time();
-fork_t              *new_forks(int n);
-void                print_record(char *record, philo_t *ph);
-void                eating(philo_t *ph);
-void                *checking(void *philos);
+int                     ft_atoi(const char *nptr);
+char                    *ft_strjoin(char *s1, char *s2);
+char                    *ft_itoa(int n);
+int                     current_time();
+fork_t                  *new_forks(int n);
+void                    print_record(char *record, philo_t *ph);
+void                    eating(philo_t *ph);
+void                    *checking(void *philos);
 
 #endif
 

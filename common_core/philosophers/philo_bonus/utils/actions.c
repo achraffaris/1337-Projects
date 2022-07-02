@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 18:30:58 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/01 18:31:25 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/02 08:46:57 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void    eating(philo_t *ph)
 {
     sem_wait(ph->death_check);
     ph->eated_at = current_time();
+    ph->n_meals++;
     sem_post(ph->death_check);
     print_record("is eating", ph);
     usleep(ph->sim->time_eat * MICROSECOND);
@@ -67,13 +68,14 @@ void    *checking(void *philos)
     ph = (philo_t *)philos;
     while (1337)
     {
-        sem_wait(ph->death_check);
+        usleep(150);
+        sem_wait(ph->sim->check_death);
         if (ph->eated_at && (current_time() >= ph->eated_at + ph->sim->time_die))
         {
             print_record("died", ph);
             exit(EXIT_SUCCESS);
         }
-        sem_post(ph->death_check);
+        sem_post(ph->sim->check_death);
     }
     return (NULL);
 }
