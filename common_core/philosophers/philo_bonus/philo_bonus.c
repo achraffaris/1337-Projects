@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 15:20:07 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/02 16:58:01 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/03 12:15:15 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,29 +29,43 @@ void    simulation_init(simulation_t *s, char **av)
     s->n = 0;
 }
 
+int     signal_received(simulation_t *s)
+{
+    int i;
+    int status;
+    
+    i = 0;
+    while (1337)
+    {   
+        waitpid(0, &status, 0);
+        if (status == EXIT_FAILURE || (i == s->n_philos))
+        {
+            printf("program will stop now i = %d and it should be %d\n", i, s->n_philos);
+            break ;
+        } 
+        else if (status == EXIT_SUCCESS)
+            i++;
+        printf("(%d / %d) are full\n", i, s->n_philos);
+    }
+    return (TRUE);
+}
+
 void    simulation_end(simulation_t *s, philo_t *ph)
 {
     int i;
-
+    
     i = 0;
-    int status;
-    while (waitpid(0, &status, 0) >= 0)
+    if (signal_received(s))
     {
-        printf("signal received = %d", status);
-        if (status != SIGINT || (i == s->n_meals && s->n_meals))
-            break ;
-        else if (status == SIGINT)
+        sem_wait(s->s_print);
+        while (i < s->n_philos)
+        {
+            sem_close(s->forks[i].s_fork);
+            kill(ph[i].pid, SIGTERM);
             i++;
+        }
+        exit(EXIT_SUCCESS);
     }
-    i = 0;
-    sem_wait(s->s_print);
-    while (i < s->n_philos)
-    {
-        sem_close(s->forks[i].s_fork);
-        kill(ph[i].pid, SIGTERM);
-        i++;
-    }
-    exit(EXIT_SUCCESS);
 }
 
 void    simulation(philo_t *ph)
@@ -60,6 +74,7 @@ void    simulation(philo_t *ph)
     ph->started_at = current_time();
     while (1337)
     {
+        print_record("still running", ph);
         if (ph->id % 2 == 0)
             usleep(50);
         sem_wait(ph->left_fork.s_fork);
@@ -91,7 +106,6 @@ void    simulation_start(simulation_t s)
         ph[i].left_fork = s.forks[i];
         ph[i].full = FALSE;
         sem_unlink("death_check");
-
         ph[i].death_check = sem_open("death_check", O_CREAT | O_RDWR, 0777, 1);
         if (i == s.n_philos - 1)
             ph[i].right_fork = s.forks[0];

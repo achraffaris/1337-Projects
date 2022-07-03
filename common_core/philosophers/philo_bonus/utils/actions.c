@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 18:30:58 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/02 16:57:47 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/03 12:11:02 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,10 @@ void    eating(philo_t *ph)
 {
     sem_wait(ph->death_check);
     ph->eated_at = current_time();
-    ph->n_meals++;
-    sem_post(ph->death_check);
     print_record("is eating", ph);
     usleep(ph->sim->time_eat * MICROSECOND);
+    ph->n_meals++;
+    sem_post(ph->death_check);
     sem_post(ph->left_fork.s_fork);
     sem_post(ph->right_fork.s_fork);
 }
@@ -69,18 +69,19 @@ void    *checking(void *philos)
     while (1337)
     {
         usleep(150);
-        sem_wait(ph->sim->check_death);
+        sem_wait(ph->death_check);
         if (ph->eated_at && (current_time() >= ph->eated_at + ph->sim->time_die))
         {
             print_record("died", ph);
-            kill(ph->pid, SIGTERM);
+            exit(EXIT_FAILURE);
         }
         else if (!ph->full && ph->sim->n_meals && ph->n_meals >= ph->sim->n_meals)
         {
+            print_record("full", ph);
             ph->full = TRUE;
-            kill(ph->pid, SIGINT);
+            exit(EXIT_SUCCESS);
         }
-        sem_post(ph->sim->check_death);
+        sem_post(ph->death_check);
     }
     return (NULL);
 }

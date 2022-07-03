@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:46:36 by afaris            #+#    #+#             */
-/*   Updated: 2022/07/02 08:43:34 by afaris           ###   ########.fr       */
+/*   Updated: 2022/07/03 11:25:26 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,12 @@
 #include <signal.h>
 #include <fcntl.h> 
 #include <sys/stat.h>
+
 # define TRUE 1
 # define FALSE 0
 # define MICROSECOND 1000
+# define MEALS_COMPLETED 15
+# define DIED 4
 
 typedef struct fork
 {
