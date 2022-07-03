@@ -6,9 +6,10 @@ AR = ar rc
 
 SRCS = 	philo_bonus.c \
 		utils/ft_atoi.c \
-		utils/actions.c \
 		utils/ft_strjoin.c \
-		utils/ft_itoa.c 
+		utils/ft_itoa.c \
+		utils/utils.c \
+		utils/extra_utils.c \
 
 OBJS = $(SRCS:.c=.o)
 
